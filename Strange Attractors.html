@@ -291,23 +291,9 @@
           sizeData.push(s);
         }
 
-        var particleGeometry = new THREE.BufferGeometry();
         var positions = new Float32Array(pData);
         var indices = new Float32Array(idData);
         var sizes = new Float32Array(sizeData);
-
-        particleGeometry.addAttribute(
-          "position",
-          new THREE.BufferAttribute(positions, 3)
-        );
-        particleGeometry.addAttribute(
-          "vertexId",
-          new THREE.BufferAttribute(indices, 1)
-        );
-        particleGeometry.addAttribute(
-          "size",
-          new THREE.BufferAttribute(sizes, 1)
-        );
 
         if (attractor.autoCenter) attractorObject.position.copy(center);
         else attractorObject.position.set(0, 0, 0);
