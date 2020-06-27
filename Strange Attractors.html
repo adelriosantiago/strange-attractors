@@ -255,9 +255,7 @@
       var thinLines, thickLines, particleSystem;
       var attractorObject = new THREE.Object3D();
 
-      function initScene(id, randomize, hash) {
-        currentAttractor = id;
-
+      function initScene(randomize, hash) {
         while (attractorObject.children.length) {
           attractorObject.remove(attractorObject.children[0]);
         }
@@ -269,7 +267,7 @@
           return Maf.parabola(p, 1);
         }
 
-        var attractor = new attractors[id]();
+        var attractor = new attractors["lorenz"]();
 
         if (randomize) {
           attractor.randomize();
@@ -287,7 +285,7 @@
 
           if (isNaN(p.x) || isNaN(p.y) || isNaN(p.z)) {
             console.log("Failed, retry");
-            initScene(id, randomize);
+            initScene(randomize);
             return;
           }
 
@@ -518,7 +516,7 @@
         orthoQuad = new THREE.Mesh(new THREE.PlaneBufferGeometry(1, 1));
         orthoScene.add(orthoQuad);
 
-        initScene("lorenz");
+        initScene(false);
 
         onWindowResized();
         fader.show();
@@ -636,8 +634,6 @@
       window.addEventListener("load", init);
 
       var attractorButtons = document.querySelectorAll("#attractors li");
-
-      var currentAttractor = "lorenz";
     </script>
   </body>
 </html>
