@@ -167,7 +167,6 @@
         }
 
         var points = [];
-        var particles = [];
 
         function densityFunction(p) {
           return Maf.parabola(p, 1);
@@ -204,10 +203,6 @@
               densityFunction(j / NUM_POINTS));
           var a = Math.random() * Math.PI;
           var b = Math.random() * 2 * Math.PI;
-
-          particles.push(attractor.scale * p.x + d * Math.sin(a) * Math.cos(b));
-          particles.push(attractor.scale * p.y + d * Math.sin(a) * Math.sin(b));
-          particles.push(attractor.scale * p.z + d * Math.cos(a));
         }
 
         var geometry = new THREE.Geometry();
@@ -261,39 +256,6 @@
         mesh = new THREE.Line(geometry, material);
         attractorObject.add(mesh);
         thickLines = mesh;
-
-        var pData = [];
-        var idData = [];
-        var sizeData = [];
-        for (var j = 0; j < particles.length; j += 3) {
-          var x = particles[j];
-          var y = particles[j + 1];
-          var z = particles[j + 2];
-          var s =
-            Maf.randomInRange(0.1, 1) * densityFunction(j / particles.length);
-
-          pData.push(x);
-          pData.push(y);
-          pData.push(z);
-          idData.push(j % 3);
-          sizeData.push(s);
-
-          pData.push(x);
-          pData.push(y);
-          pData.push(z);
-          idData.push((j % 3) + 1);
-          sizeData.push(s);
-
-          pData.push(x);
-          pData.push(y);
-          pData.push(z);
-          idData.push((j % 3) + 2);
-          sizeData.push(s);
-        }
-
-        var positions = new Float32Array(pData);
-        var indices = new Float32Array(idData);
-        var sizes = new Float32Array(sizeData);
 
         if (attractor.autoCenter) attractorObject.position.copy(center);
         else attractorObject.position.set(0, 0, 0);
