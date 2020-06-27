@@ -247,8 +247,8 @@
           new THREE.BufferAttribute(positions, 3)
         );
         var material = new THREE.LineBasicMaterial({
-          color: new THREE.Color(0xff0000),
-          opacity: 0.5,
+          color: new THREE.Color(0xffffff),
+          opacity: 0.75,
           transparent: true,
           blending: THREE.AdditiveBlending,
         });
@@ -373,50 +373,16 @@
         this.fading = "";
 
         this.onFadedIn = function () {};
-        this.onFadedOut = function () {};
       }
 
       Fader.prototype.show = function () {
         this.nDraw = 1;
-        this.easing = 0.05;
+        this.easing = 0.05; // Line drawing speed
         this.fading = "in";
-      };
-
-      Fader.prototype.hide = function () {
-        this.nDraw = 0;
-        this.easing = 0.1;
-        this.fading = "out";
       };
 
       Fader.prototype.update = function () {
         this.draw += (this.nDraw - this.draw) * this.easing;
-
-        var epsilon = 0.01;
-
-        if (this.fading === "in") {
-          if (this.nDraw - this.draw < epsilon) {
-            this.fading = "";
-            this.draw = this.nDraw;
-            requestAnimationFrame(
-              function () {
-                this.onFadedIn();
-              }.bind(this)
-            );
-          }
-        }
-
-        if (this.fading === "out") {
-          if (this.draw - this.nDraw < epsilon) {
-            this.fading = "";
-            this.draw = this.nDraw;
-            requestAnimationFrame(
-              function () {
-                this.onFadedOut();
-              }.bind(this)
-            );
-          }
-        }
-
         return this.draw;
       };
 
