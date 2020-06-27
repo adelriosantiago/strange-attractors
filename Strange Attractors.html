@@ -156,7 +156,7 @@
       // Common settings: { a: 6.970773956984983, b: 45.21069279106107. c: 0.40074195636847343 }
 
       var resolution = new THREE.Vector2(window.innerWidth, window.innerHeight);
-      var thinLines, thickLines;
+      var smokeLines, solidLines;
       var attractorObject = new THREE.Object3D();
 
       function initScene(randomize, hash) {
@@ -165,10 +165,6 @@
         }
 
         var points = [];
-
-        function densityFunction(p) {
-          return Maf.parabola(p, 1);
-        }
 
         var attractor = new LorenzAttractor();
         if (randomize) attractor.randomize();
@@ -208,43 +204,49 @@
         center.add(geometry.boundingBox.min);
         center.multiplyScalar(-1);
 
+        // Smoke lines
         var line = new THREE.MeshLine();
-        line.setGeometry(geometry, function (p) {
-          return densityFunction(p);
+        line.setGeometry(geometry, (p) => {
+          return Maf.parabola(p, 1);
         });
-        var material = new THREE.MeshLineMaterial({
-          color: new THREE.Color(0xffffff),
-          resolution: resolution,
-          sizeAttenuation: true,
-          lineWidth: 5 * attractor.scale * attractor.spread,
-          opacity: 0.005,
-          near: camera.near,
-          far: camera.far,
-          depthWrite: false,
-          depthTest: false,
-          transparent: true,
-          blending: THREE.AdditiveBlending,
-        });
-        var mesh = new THREE.Mesh(line.geometry, material);
+        var mesh = new THREE.Mesh(
+          line.geometry,
+          new THREE.MeshLineMaterial({
+            color: new THREE.Color(0xffffff),
+            resolution: resolution,
+            sizeAttenuation: true,
+            lineWidth: 5 * attractor.scale * attractor.spread,
+            opacity: 0.05,
+            near: camera.near,
+            far: camera.far,
+            depthWrite: false,
+            depthTest: false,
+            transparent: true,
+            blending: THREE.AdditiveBlending,
+          })
+        );
         attractorObject.add(mesh);
-        thinLines = mesh;
+        smokeLines = mesh;
 
+        // Solid lines
         var geometry = new THREE.BufferGeometry();
         var positions = new Float32Array(points);
         geometry.addAttribute(
           "position",
           new THREE.BufferAttribute(positions, 3)
         );
-        var material = new THREE.LineBasicMaterial({
-          color: new THREE.Color(0xffffff),
-          opacity: 0.75,
-          transparent: true,
-          blending: THREE.AdditiveBlending,
-        });
 
-        mesh = new THREE.Line(geometry, material);
+        mesh = new THREE.Line(
+          geometry,
+          new THREE.LineBasicMaterial({
+            color: new THREE.Color(0xff0000),
+            opacity: 0.5,
+            transparent: true,
+            blending: THREE.AdditiveBlending,
+          })
+        );
         attractorObject.add(mesh);
-        thickLines = mesh;
+        solidLines = mesh;
 
         if (attractor.autoCenter) attractorObject.position.copy(center);
         else attractorObject.position.set(0, 0, 0);
@@ -382,13 +384,13 @@
         controls.update();
 
         var t = fader.update();
-        thinLines.geometry.setDrawRange(
+        smokeLines.geometry.setDrawRange(
           0,
-          thinLines.geometry.attributes.position.count * t
+          smokeLines.geometry.attributes.position.count * t
         );
-        thickLines.geometry.setDrawRange(
+        solidLines.geometry.setDrawRange(
           0,
-          thickLines.geometry.attributes.position.count * t
+          solidLines.geometry.attributes.position.count * t
         );
 
         renderer.render(scene, camera, baseFBO);
