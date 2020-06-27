@@ -38,10 +38,8 @@
       varying vec2 vUv;
 
       void main() {
-
-      	vUv = uv;
-      	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1. );
-
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1. );
       }
     </script>
 
@@ -108,7 +106,7 @@
     <script>
       "use strict";
 
-      var NUM_POINTS = 50000;
+      var NUM_POINTS = 100000;
 
       var container, renderer, camera, controls, scene;
       var mesh;
@@ -187,22 +185,13 @@
 
           if (isNaN(p.x) || isNaN(p.y) || isNaN(p.z)) {
             console.log("Failed, retry");
-            initScene(randomize);
+            initScene(true);
             return;
           }
 
           points.push(attractor.scale * p.x);
           points.push(attractor.scale * p.y);
           points.push(attractor.scale * p.z);
-
-          var d =
-            Math.random() *
-            (2 *
-              attractor.spread *
-              attractor.scale *
-              densityFunction(j / NUM_POINTS));
-          var a = Math.random() * Math.PI;
-          var b = Math.random() * 2 * Math.PI;
         }
 
         var geometry = new THREE.Geometry();
@@ -224,11 +213,11 @@
           return densityFunction(p);
         });
         var material = new THREE.MeshLineMaterial({
-          color: new THREE.Color(0x00ff00),
+          color: new THREE.Color(0xffffff),
           resolution: resolution,
           sizeAttenuation: true,
-          lineWidth: 1 * attractor.scale * attractor.spread,
-          opacity: 0,
+          lineWidth: 5 * attractor.scale * attractor.spread,
+          opacity: 0.005,
           near: camera.near,
           far: camera.far,
           depthWrite: false,
@@ -338,7 +327,6 @@
         onWindowResized();
         fader.show();
         window.addEventListener("resize", onWindowResized);
-
         animate();
       }
 
