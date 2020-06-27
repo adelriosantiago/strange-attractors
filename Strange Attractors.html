@@ -241,15 +241,7 @@
         this.z = Maf.randomInRange(-10, 10);
       };
 
-      // Lorenz a: 6.970773956984983, b: 45.21069279106107. c: 0.40074195636847343
-
-      var attractors = {
-        lorenz: LorenzAttractor,
-      };
-
-      // http://www.chaoscope.org/doc/attractors.htm
-      // http://softology.com.au/tutorials/attractors2d/tutorial.htm
-      // http://chaos-3d.e-monsite.com/pages/strange-attractor-type-i.html
+      // Common settings: { a: 6.970773956984983, b: 45.21069279106107. c: 0.40074195636847343 }
 
       var resolution = new THREE.Vector2(window.innerWidth, window.innerHeight);
       var thinLines, thickLines, particleSystem;
@@ -267,12 +259,9 @@
           return Maf.parabola(p, 1);
         }
 
-        var attractor = new attractors["lorenz"]();
-
-        if (randomize) {
-          attractor.randomize();
-          console.log(attractor);
-        }
+        var attractor = new LorenzAttractor();
+        if (randomize) attractor.randomize();
+        console.log("New attractor generated:", attractor);
 
         var p = {
           x: attractor.x,
@@ -632,8 +621,6 @@
       }
 
       window.addEventListener("load", init);
-
-      var attractorButtons = document.querySelectorAll("#attractors li");
     </script>
   </body>
 </html>
