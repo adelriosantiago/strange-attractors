@@ -309,37 +309,6 @@
           new THREE.BufferAttribute(sizes, 1)
         );
 
-        var particleMaterial = new THREE.RawShaderMaterial({
-          uniforms: {
-            scale: {
-              type: "f",
-              value: 0.5 * attractor.particleSize * attractor.scale,
-            },
-            opacity: { type: "f", value: 0 },
-            color: { type: "c", value: new THREE.Color(0x0000ff) },
-            vertices: {
-              type: "v3v",
-              value: [
-                new THREE.Vector3(-1, -1, 0),
-                new THREE.Vector3(1, -1, 0),
-                new THREE.Vector3(0, 1, 0),
-              ],
-            },
-            uvs: {
-              type: "v2v",
-              value: [
-                new THREE.Vector3(0, 1),
-                new THREE.Vector3(1, 1),
-                new THREE.Vector3(0.5, 0),
-              ],
-            },
-          },
-          depthTest: false,
-          depthWrite: false,
-          transparent: true,
-          blending: THREE.AdditiveBlending,
-        });
-
         if (attractor.autoCenter) attractorObject.position.copy(center);
         else attractorObject.position.set(0, 0, 0);
       }
