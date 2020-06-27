@@ -107,10 +107,7 @@
       "use strict";
 
       var NUM_POINTS = 100000;
-
       var container, renderer, camera, controls, scene;
-      var mesh;
-
       var container = document.getElementById("container");
 
       function LorenzAttractor() {
@@ -278,7 +275,7 @@
         scene.add(camera);
 
         renderer = new THREE.WebGLRenderer({
-          antialias: !true,
+          antialias: true,
           preserveDrawingBuffer: true,
         });
         renderer.setPixelRatio(window.devicePixelRatio);
@@ -293,8 +290,8 @@
         controls.dampingFactor = 0.1;
         controls.rotateSpeed = 0.1;
 
+        // Base shader
         baseFBO = createRenderTarget();
-
         shiftShader = new THREE.RawShaderMaterial({
           uniforms: {
             inputTexture: { type: "t", value: baseFBO.texture },
