@@ -458,7 +458,7 @@
 
       var baseFBO, shiftFBO, tiltShiftFBO;
       var orthoQuad, orthoCamera, orthoScene;
-      var shiftShader, finalShader, tiltShiftShader;
+      var shiftShader;
 
       function init() {
         container = document.getElementById("container");
@@ -506,28 +506,6 @@
           fragmentShader: document.getElementById("shift-fs").textContent,
         });
 
-        tiltShiftShader = new THREE.RawShaderMaterial({
-          uniforms: {
-            inputTexture: { type: "t", value: shiftFBO.texture },
-            resolution: { type: "v2", value: new THREE.Vector2() },
-          },
-          vertexShader: document.getElementById("ortho-vs").textContent,
-          fragmentShader: document.getElementById("tilt-shift-fs").textContent,
-        });
-
-        finalShader = new THREE.RawShaderMaterial({
-          uniforms: {
-            inputTexture: { type: "t", value: tiltShiftFBO.texture },
-            resolution: { type: "v2", value: resolution },
-            boost: { type: "f", value: 1.1 },
-            reduction: { type: "f", value: 0.9 },
-            amount: { type: "f", value: 0.1 },
-            time: { type: "f", value: 0 },
-          },
-          vertexShader: document.getElementById("ortho-vs").textContent,
-          fragmentShader: document.getElementById("final-fs").textContent,
-        });
-
         orthoScene = new THREE.Scene();
         orthoCamera = new THREE.OrthographicCamera(
           1 / -2,
@@ -537,10 +515,7 @@
           0.00001,
           1000
         );
-        orthoQuad = new THREE.Mesh(
-          new THREE.PlaneBufferGeometry(1, 1),
-          finalShader
-        );
+        orthoQuad = new THREE.Mesh(new THREE.PlaneBufferGeometry(1, 1));
         orthoScene.add(orthoQuad);
 
         if (window.location.hash) processHash();
@@ -655,10 +630,7 @@
         renderer.render(scene, camera, baseFBO);
         orthoQuad.material = shiftShader;
         renderer.render(orthoScene, orthoCamera, shiftFBO);
-        orthoQuad.material = tiltShiftShader;
         renderer.render(orthoScene, orthoCamera, tiltShiftFBO);
-        finalShader.uniforms.time.value = 0.00001 * performance.now();
-        orthoQuad.material = finalShader;
         renderer.render(orthoScene, orthoCamera);
       }
 
