@@ -26,45 +26,6 @@
     <script src="./Maf.js"></script>
     <script src="./THREE.MeshLine.js"></script>
 
-    <script id="particle-vs" type="x-shader/x-vertex">
-      precision highp float;
-
-      attribute vec3 position;
-      attribute float vertexId;
-      attribute float size;
-
-      uniform mat4 modelMatrix;
-      uniform mat4 modelViewMatrix;
-      uniform mat4 projectionMatrix;
-      uniform vec3 vertices[ 3 ];
-      uniform vec2 uvs[ 3 ];
-
-      uniform vec2 dimensions;
-      uniform float scale;
-      uniform vec3 color;
-
-      varying vec2 vUv;
-      varying vec3 vColor;
-      varying float vSize;
-
-      const float PI = 3.14159265359;
-
-      void main() {
-
-      	int id = int( vertexId );
-      	vec3 v = vertices[ id ];
-      	vec4 p = modelViewMatrix * vec4( position, 1. );
-      	p.xyz += scale * v * size;
-
-      	vSize = size;
-      	vUv = uvs[ id ];
-      	vColor = color;
-
-      	gl_Position = projectionMatrix * p;
-
-      }
-    </script>
-
     <script type="x-shader/x-vertex" id="ortho-vs">
       precision highp float;
 
@@ -80,27 +41,6 @@
 
       	vUv = uv;
       	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1. );
-
-      }
-    </script>
-
-    <script id="particle-fs" type="x-shader/x-vertex">
-      precision highp float;
-
-      varying vec2 vUv;
-      varying vec3 vColor;
-      varying float vSize;
-
-      uniform float opacity;
-
-      void main() {
-
-      	vec2 barycenter = vec2( .5, .6666 );
-      	float d = smoothstep( .5, .55, 1. - 2. * length( vUv - barycenter ) );
-      	float a = 1. - smoothstep( .9, 1., 5. * length( vUv - barycenter ) );
-      	a *= vSize;
-      	if( d <= 0. || a * opacity <= 0. ) discard;
-      	gl_FragColor = vec4( vColor, a * opacity );
 
       }
     </script>
@@ -493,8 +433,6 @@
               ],
             },
           },
-          vertexShader: document.getElementById("particle-vs").textContent,
-          fragmentShader: document.getElementById("particle-fs").textContent,
           depthTest: false,
           depthWrite: false,
           transparent: true,
