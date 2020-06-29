@@ -23,8 +23,8 @@
 
     <script src="./three.js"></script>
     <script src="./OrbitControls.js"></script>
-    <script src="./Maf.js"></script>
     <script src="./THREE.MeshLine.js"></script>
+    <script src="./Maf.js"></script>
 
     <script type="x-shader/x-vertex" id="ortho-vs">
       precision highp float;
@@ -200,8 +200,9 @@
         // Smoke lines
         var line = new THREE.MeshLine();
         line.setGeometry(geometry, (p) => {
-          return Maf.parabola(p, 1);
+          return 1;
         });
+
         smokeLines = new THREE.Mesh(
           line.geometry,
           new THREE.MeshLineMaterial({
