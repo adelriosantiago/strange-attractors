@@ -278,20 +278,26 @@
 
         // Star creation
         starGeo = new THREE.Geometry();
-        for (let i = 0; i < 6000; i++) {
+        for (let i = 0; i < 3000; i++) {
           let star = new THREE.Vector3(
-            Math.random() * 600 - 300,
-            Math.random() * 600 - 300,
-            Math.random() * 600 - 300
+            Math.random() * 10000 - 5000,
+            Math.random() * 10000 - 5000,
+            Math.random() * 10000 - 5000
           );
           starGeo.vertices.push(star);
         }
 
-        //let sprite = new THREE.TextureLoader().load( 'star.png' );
+        let sprite = new THREE.TextureLoader().load(
+          "https://threejs.org/examples/textures/sprites/circle.png"
+        );
         let starMaterial = new THREE.PointsMaterial({
           color: 0xaaaaaa,
-          size: 0.5,
-          //map: sprite
+          size: Math.floor(Math.random() * 30),
+          blending: THREE.AdditiveBlending,
+          transparent: true,
+          depthTest: false,
+          sizeAttenuation: true,
+          map: sprite,
         });
 
         stars = new THREE.Points(starGeo, starMaterial);
