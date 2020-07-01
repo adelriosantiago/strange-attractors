@@ -106,7 +106,7 @@
     <script>
       "use strict";
 
-      var NUM_POINTS = 100000;
+      var NUM_POINTS = 200000;
       var renderer, camera, controls, scene;
       let starGeo, stars;
       var container = document.getElementById("container");
@@ -292,7 +292,7 @@
         );
         let starMaterial = new THREE.PointsMaterial({
           color: 0xaaaaaa,
-          size: Math.floor(Math.random() * 30),
+          size: Math.floor(Math.random() * 15),
           blending: THREE.AdditiveBlending,
           transparent: true,
           depthTest: false,
