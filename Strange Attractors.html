@@ -107,7 +107,8 @@
       "use strict";
 
       var NUM_POINTS = 100000;
-      var container, renderer, camera, controls, scene;
+      var renderer, camera, controls, scene;
+      let starGeo, stars;
       var container = document.getElementById("container");
 
       function LorenzAttractor() {
@@ -210,7 +211,7 @@
             resolution: resolution,
             sizeAttenuation: true,
             lineWidth: 5 * attractor.scale * attractor.spread,
-            opacity: 0.05,
+            opacity: 0.005,
             near: camera.near,
             far: camera.far,
             depthWrite: false,
@@ -232,8 +233,8 @@
         solidLines = new THREE.Line(
           geometry,
           new THREE.LineBasicMaterial({
-            color: new THREE.Color(0xff0000),
-            opacity: 0.5,
+            color: new THREE.Color(0xffffff),
+            opacity: 0.25,
             transparent: true,
             blending: THREE.AdditiveBlending,
           })
@@ -274,6 +275,27 @@
         camera.position.set(0, 0, 200);
         camera.lookAt(camera.target);
         scene.add(camera);
+
+        // Star creation
+        starGeo = new THREE.Geometry();
+        for (let i = 0; i < 6000; i++) {
+          let star = new THREE.Vector3(
+            Math.random() * 600 - 300,
+            Math.random() * 600 - 300,
+            Math.random() * 600 - 300
+          );
+          starGeo.vertices.push(star);
+        }
+
+        //let sprite = new THREE.TextureLoader().load( 'star.png' );
+        let starMaterial = new THREE.PointsMaterial({
+          color: 0xaaaaaa,
+          size: 0.5,
+          //map: sprite
+        });
+
+        stars = new THREE.Points(starGeo, starMaterial);
+        scene.add(stars);
 
         renderer = new THREE.WebGLRenderer({
           antialias: true,
