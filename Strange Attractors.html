@@ -106,10 +106,10 @@
     <script>
       "use strict";
 
-      var NUM_POINTS = 200000;
-      var renderer, camera, controls, scene;
+      const NUM_POINTS = 200000;
+      let renderer, camera, controls, scene;
       let starGeo, stars;
-      var container = document.getElementById("container");
+      let container = document.getElementById("container");
 
       function LorenzAttractor() {
         this.id = "lorenz";
