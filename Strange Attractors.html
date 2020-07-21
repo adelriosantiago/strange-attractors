@@ -16,15 +16,46 @@
         width: 100%;
         height: 100%;
       }
+      #controls {
+        position: fixed;
+        top: 0px;
+        left: 20px;
+        color: white;
+      }
+      a.regenerate {
+        display: inline-block;
+        font-size: 12px;
+        padding: 0.7em 1.4em;
+        margin: 0 0.3em 0.3em 0;
+        border-radius: 0.15em;
+        box-sizing: border-box;
+        text-decoration: none;
+        font-family: "Roboto", sans-serif;
+        text-transform: uppercase;
+        font-weight: 400;
+        color: #ffffff;
+        background-color: #484848;
+        box-shadow: inset 0 -0.6em 0 -0.35em rgba(0, 0, 0, 0.17);
+        text-align: center;
+        position: relative;
+      }
+      a.regenerate:active {
+        top: 0.1em;
+      }
     </style>
   </head>
   <body>
     <div id="container"></div>
+    <div id="controls">
+      <h2 id="galaxy-name">lorenz I</h2>
+      <a href="#" class="regenerate" onclick="initScene(true)">regenerate</a>
+    </div>
 
     <script src="./three.js"></script>
     <script src="./OrbitControls.js"></script>
     <script src="./THREE.MeshLine.js"></script>
     <script src="./Maf.js"></script>
+    <script src="./namegen.js"></script>
 
     <script type="x-shader/x-vertex" id="ortho-vs">
       precision highp float;
