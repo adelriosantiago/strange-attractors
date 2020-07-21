@@ -142,6 +142,8 @@
       };
 
       LorenzAttractor.prototype.randomize = function () {
+        document.getElementById("galaxy-name").innerHTML = namegen();
+
         this.a = Maf.randomInRange(5, 20);
         this.b = Maf.randomInRange(5, 50);
         this.c = Maf.randomInRange(0.1, 0.5);
