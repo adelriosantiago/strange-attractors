@@ -32,13 +32,11 @@
         font-family: "Righteous", cursive;
         text-transform: uppercase;
       }
-      #controls {
+      #regen {
         position: fixed;
-        top: 0px;
+        top: 70px;
         left: 20px;
         color: white;
-      }
-      a.regenerate {
         display: inline-block;
         font-size: 12px;
         padding: 0.7em 1.4em;
@@ -50,19 +48,31 @@
         background-color: #484848;
         box-shadow: inset 0 -0.6em 0 -0.35em rgba(0, 0, 0, 0.17);
         text-align: center;
-        position: relative;
       }
-      a.regenerate:active {
-        top: 0.1em;
+      #regen:active {
+        background-color: #989898;
+      }
+      #galaxy-name {
+        position: fixed;
+        top: 0px;
+        left: 20px;
+        color: white;
+      }
+      #galaxy-settings {
+        position: fixed;
+        bottom: 0px;
+        left: 10px;
+        color: white;
       }
     </style>
   </head>
   <body>
+    <h2 id="galaxy-name">lorenz I</h2>
+    <h6 id="galaxy-settings"></h6>
     <div id="container"></div>
-    <div id="controls">
-      <h2 id="galaxy-name">lorenz I</h2>
-      <a href="#" class="regenerate" onclick="initScene(true)">regenerate</a>
-    </div>
+    <a id="regen" href="#" class="regenerate" onclick="initScene(true)"
+      >regenerate</a
+    >
 
     <script src="./three.js"></script>
     <script src="./OrbitControls.js"></script>
@@ -112,7 +122,8 @@
     <script>
       "use strict";
 
-      const NUM_POINTS = 200000;
+      const NUM_POINTS = 90000;
+      let time = 0;
       let renderer, camera, controls, scene;
       let starGeo, stars;
       let container = document.getElementById("container");
@@ -150,8 +161,6 @@
       };
 
       LorenzAttractor.prototype.randomize = function () {
-        document.getElementById("galaxy-name").innerHTML = namegen();
-
         this.a = Maf.randomInRange(5, 20);
         this.b = Maf.randomInRange(5, 50);
         this.c = Maf.randomInRange(0.1, 0.5);
@@ -159,6 +168,11 @@
         this.x = Maf.randomInRange(-10, 10);
         this.y = Maf.randomInRange(-10, 10);
         this.z = Maf.randomInRange(-10, 10);
+
+        document.getElementById("galaxy-name").innerHTML = namegen();
+        document.getElementById(
+          "galaxy-settings"
+        ).innerHTML = `settings: a: ${this.a}, b: ${this.b}, c: ${this.c}, x: ${this.x}, y: ${this.y}, z: ${this.z}`;
       };
 
       let resolution = new THREE.Vector2(window.innerWidth, window.innerHeight);
@@ -182,6 +196,7 @@
           z: attractor.z,
         };
 
+        time = 0;
         for (let j = 0; j < NUM_POINTS; j++) {
           p = attractor.generatePoint(p.x, p.y, p.z);
 
@@ -355,7 +370,6 @@
         onWindowResized();
         window.addEventListener("resize", onWindowResized);
 
-        fader.show();
         animate();
       }
 
@@ -380,42 +394,14 @@
         orthoCamera.updateProjectionMatrix();
       }
 
-      function Fader() {
-        this.draw = 0;
-        this.nDraw = 0;
-        this.easing = 0;
-        this.fading = "";
-
-        this.onFadedIn = function () {};
-      }
-
-      Fader.prototype.show = function () {
-        this.nDraw = 1;
-        this.easing = 0.005; // Line drawing speed
-        this.fading = "in";
-      };
-
-      Fader.prototype.update = function () {
-        this.draw += (this.nDraw - this.draw) * this.easing;
-        return this.draw;
-      };
-
-      let fader = new Fader();
-
       function animate() {
+        console.log("anim");
         requestAnimationFrame(animate);
-
         controls.update();
 
-        let t = fader.update();
-        smokeLines.geometry.setDrawRange(
-          0,
-          smokeLines.geometry.attributes.position.count * t
-        );
-        solidLines.geometry.setDrawRange(
-          0,
-          solidLines.geometry.attributes.position.count * t
-        );
+        solidLines.geometry.setDrawRange(0, time);
+        smokeLines.geometry.setDrawRange(0, time);
+        if (time < NUM_POINTS) time += 100;
 
         renderer.render(scene, camera, baseFBO);
         orthoQuad.material = shiftShader;
