@@ -8,7 +8,7 @@
       content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
     <link
-      href="https://fonts.googleapis.com/css2?family=Righteous&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Righteous&family=Roboto:wght@300&display=swap"
       rel="stylesheet"
     />
     <style>
@@ -59,6 +59,7 @@
         color: white;
       }
       #galaxy-settings {
+        font-family: "Roboto", cursive;
         position: fixed;
         bottom: 0px;
         left: 10px;
@@ -77,7 +78,6 @@
     <script src="./three.js"></script>
     <script src="./OrbitControls.js"></script>
     <script src="./THREE.MeshLine.js"></script>
-    <script src="./Maf.js"></script>
     <script src="./namegen.js"></script>
 
     <script type="x-shader/x-vertex" id="ortho-vs">
@@ -161,18 +161,18 @@
       };
 
       LorenzAttractor.prototype.randomize = function () {
-        this.a = Maf.randomInRange(5, 20);
-        this.b = Maf.randomInRange(5, 50);
-        this.c = Maf.randomInRange(0.1, 0.5);
+        this.a = Math.random() * 15 + 5;
+        this.b = Math.random() * 45 + 5;
+        this.c = (Math.random() * 4 + 1) / 10;
 
-        this.x = Maf.randomInRange(-10, 10);
-        this.y = Maf.randomInRange(-10, 10);
-        this.z = Maf.randomInRange(-10, 10);
+        this.x = (Math.random() - 0.5) * 10;
+        this.y = (Math.random() - 0.5) * 10;
+        this.z = (Math.random() - 0.5) * 10;
 
         document.getElementById("galaxy-name").innerHTML = namegen();
         document.getElementById(
           "galaxy-settings"
-        ).innerHTML = `settings: a: ${this.a}, b: ${this.b}, c: ${this.c}, x: ${this.x}, y: ${this.y}, z: ${this.z}`;
+        ).innerHTML = `a: ${this.a}, b: ${this.b}, c: ${this.c}, x: ${this.x}, y: ${this.y}, z: ${this.z}`;
       };
 
       let resolution = new THREE.Vector2(window.innerWidth, window.innerHeight);
