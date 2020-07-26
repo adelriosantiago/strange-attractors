@@ -140,6 +140,8 @@
         this.y = 10;
         this.z = 10;
 
+        this.color = "0xffffff";
+
         this.h = 0.004;
         this.scale = 10;
         this.spread = 0.5;
@@ -167,6 +169,8 @@
         this.x = (Math.random() - 0.5) * 10;
         this.y = (Math.random() - 0.5) * 10;
         this.z = (Math.random() - 0.5) * 10;
+
+        this.color = `0x${Math.floor(Math.random() * 16777215).toString(16)}`;
 
         document.getElementById("galaxy-name").innerHTML = namegen();
         document.getElementById(
@@ -232,11 +236,11 @@
         smokeLines = new THREE.Mesh(
           line.geometry,
           new THREE.MeshLineMaterial({
-            color: new THREE.Color(0xffffff),
+            color: new THREE.Color(eval(attractor.color)),
             resolution: resolution,
             sizeAttenuation: true,
             lineWidth: 5 * attractor.scale * attractor.spread,
-            opacity: 0.005,
+            opacity: 0.025,
             near: camera.near,
             far: camera.far,
             depthWrite: false,
@@ -399,7 +403,7 @@
 
         solidLines.geometry.setDrawRange(0, time);
         smokeLines.geometry.setDrawRange(0, time);
-        if (time < NUM_POINTS) time += 100;
+        if (time < NUM_POINTS) time += 300;
 
         renderer.render(scene, camera, baseFBO);
         orthoQuad.material = shiftShader;
