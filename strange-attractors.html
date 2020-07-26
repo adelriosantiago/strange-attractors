@@ -113,7 +113,6 @@
         float b = texture2D( inputTexture, vUv + inc.xy ).b;
 
         vec3 color = vec3( r, g, b );
-        //color = vec3( 1. ) - ( vec3( 1. ) - color ) * ( vec3( 1. ) - color );
 
         gl_FragColor = vec4( color, 1. );
       }
@@ -395,7 +394,6 @@
       }
 
       function animate() {
-        console.log("anim");
         requestAnimationFrame(animate);
         controls.update();
 
