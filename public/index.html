@@ -72,7 +72,7 @@
     <h6 id="galaxy-settings"></h6>
     <div id="container"></div>
     <a id="regen" href="#" class="regenerate" onclick="initScene(true)"
-      >regenerate</a
+      >generate new</a
     >
 
     <script src="./three.js"></script>
@@ -313,9 +313,7 @@
           starGeo.vertices.push(star);
         }
 
-        let sprite = new THREE.TextureLoader().load(
-          "https://threejs.org/examples/textures/sprites/circle.png"
-        );
+        let sprite = new THREE.TextureLoader().load("./circle.png"); // From https://threejs.org/examples/textures/sprites/circle.png
         let starMaterial = new THREE.PointsMaterial({
           color: 0xaaaaaa,
           size: 10,

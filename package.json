@@ -1,0 +1,27 @@
+{
+  "name": "strange-att",
+  "version": "1.0.0",
+  "description": "Strange attractor generator in THREE.js",
+  "main": "index.js",
+  "scripts": {
+    "start": "forever --uid \"strange-att\" ./index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adelriosantiago/strange-attractors.git"
+  },
+  "keywords": [
+    "strange",
+    "attractor"
+  ],
+  "author": "Alejandro del Río Santiago <adelriosantiago@gmail.com> (http://www.adelriosantiago.com)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/adelriosantiago/strange-attractors/issues"
+  },
+  "homepage": "https://github.com/adelriosantiago/strange-attractors#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
