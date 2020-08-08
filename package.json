@@ -23,5 +23,8 @@
   "homepage": "https://github.com/adelriosantiago/strange-attractors#readme",
   "dependencies": {
     "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "forever": "^3.0.0"
   }
 }
