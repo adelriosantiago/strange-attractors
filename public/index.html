@@ -350,8 +350,8 @@
           starGeo.vertices.push(star);
         }
 
-        let sprite = new THREE.TextureLoader().load("./circle.png"); // From https://threejs.org/examples/textures/sprites/circle.png
-        let starMaterial = new THREE.PointsMaterial({
+        const sprite = new THREE.TextureLoader().load("./circle.png"); // From https://threejs.org/examples/textures/sprites/circle.png
+        const starMaterial = new THREE.PointsMaterial({
           color: 0xaaaaaa,
           size: 10,
           blending: THREE.AdditiveBlending,
@@ -412,8 +412,8 @@
       }
 
       function onWindowResized(event) {
-        let w = container.clientWidth;
-        let h = container.clientHeight;
+        const w = container.clientWidth;
+        const h = container.clientHeight;
 
         renderer.setSize(w, h);
         camera.aspect = w / h;
