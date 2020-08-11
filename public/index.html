@@ -267,7 +267,7 @@
 
         let line = new THREE.MeshLine();
         line.setGeometry(geometry, (p) => {
-          return 1;
+          return 2 + Math.sin(50 * p);
         });
 
         smokeLines = new THREE.Mesh(
@@ -276,7 +276,7 @@
             color: new THREE.Color(eval(attractor.color)),
             resolution: resolution,
             sizeAttenuation: true,
-            lineWidth: 5 * attractor.scale * attractor.spread,
+            lineWidth: 1.5 * attractor.scale * attractor.spread,
             opacity: 0.025,
             near: camera.near,
             far: camera.far,
