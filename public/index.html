@@ -32,6 +32,13 @@
         font-family: "Righteous", cursive;
         text-transform: uppercase;
       }
+      #loading {
+        position: absolute;
+        left: 40%;
+        top: 40%;
+        z-index: -1;
+        font-size: 60px;
+      }
       #regen {
         position: fixed;
         top: 70px;
@@ -100,6 +107,7 @@
       ga("create", "UA-43591418-3", "auto");
       ga("send", "pageview");
     </script>
+    <h1 id="loading">LOADING...</h1>
     <h2 id="galaxy-name">lorenz I</h2>
     <h6 id="galaxy-settings"></h6>
     <a
