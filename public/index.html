@@ -25,12 +25,14 @@
       h3,
       h4,
       h5,
-      h6,
-      p,
       a {
         text-decoration: none;
         font-family: "Righteous", cursive;
         text-transform: uppercase;
+      }
+      h6 {
+        font-family: "Roboto", cursive;
+        margin: 0px;
       }
       #loading {
         position: absolute;
@@ -39,10 +41,7 @@
         z-index: -1;
         font-size: 60px;
       }
-      #regen {
-        position: fixed;
-        top: 70px;
-        left: 20px;
+      .black-btn {
         color: white;
         display: inline-block;
         font-size: 12px;
@@ -56,29 +55,62 @@
         box-shadow: inset 0 -0.6em 0 -0.35em rgba(0, 0, 0, 0.17);
         text-align: center;
       }
-      #regen:active {
+      .black-btn:active {
         background-color: #989898;
       }
-      #galaxy-name {
-        position: fixed;
-        top: 0px;
-        left: 20px;
-        color: white;
+      #randomize {
+        position: absolute;
+        top: 50px;
+        left: 10px;
       }
-      #galaxy-settings {
-        font-family: "Roboto", cursive;
-        position: fixed;
-        bottom: 0px;
+      #galaxy-name {
+        position: absolute;
+        top: -10px;
         left: 10px;
         color: white;
+      }
+      #galaxy-params {
+        position: absolute;
+        bottom: 100px;
+        left: 10px;
+        color: white;
+      }
+      #next {
+        position: absolute;
+        bottom: 20px;
       }
       #blog-link {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
         font-family: "Roboto", cursive;
         font-size: 10px;
-        position: fixed;
+        color: white;
+      }
+      #param-controls {
+        position: absolute;
+        display: inline-flex;
+        color: white;
         bottom: 10px;
         left: 10px;
-        color: white;
+        width: 50%;
+      }
+      input[type="range"] {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background: #999;
+        width: 100%;
+        height: 1px;
+        outline: 0;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        background-color: #fff;
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: 0.3s ease-in-out;
       }
     </style>
   </head>
@@ -108,17 +140,41 @@
       ga("send", "pageview");
     </script>
     <h1 id="loading">LOADING...</h1>
-    <h2 id="galaxy-name">lorenz I</h2>
-    <h6 id="galaxy-settings"></h6>
+    <h2 id="galaxy-name">LORENZ I</h2>
+    <a id="randomize" href="#" class="black-btn" onclick="initScene(true)"
+      >RANDOMIZE</a
+    >
+    <div id="galaxy-params">
+      <h6 class="active">
+        <span class="pName">A: </span><span class="pVal">123</span>
+      </h6>
+      <h6 class="">
+        <span class="pName">B: </span><span class="pVal">345</span>
+      </h6>
+      <h6 class="">
+        <span class="pName">C: </span><span class="pVal">987</span>
+      </h6>
+    </div>
+
+    <div id="param-controls">
+      <input
+        type="range"
+        min="5000000"
+        max="20000000"
+        value="5000000"
+        step="1"
+        id="pA"
+      />
+      <a id="next" href="#" class="black-btn" onclick="next()"
+        >NEXT PARAMETER</a
+      >
+    </div>
     <a
       id="blog-link"
       href="http://adelriosantiago.com/gitblog/eng/strange-attractors"
-      >Click here to read blog article</a
+      >GO TO ARTICLE</a
     >
     <div id="container"></div>
-    <a id="regen" href="#" class="regenerate" onclick="initScene(true)"
-      >generate new</a
-    >
 
     <script src="./three.js"></script>
     <script src="./OrbitControls.js"></script>
@@ -218,9 +274,6 @@
         this.color = `0x${Math.floor(Math.random() * 16777215).toString(16)}`;
 
         document.getElementById("galaxy-name").innerHTML = namegen();
-        document.getElementById(
-          "galaxy-settings"
-        ).innerHTML = `a: ${this.a}, b: ${this.b}, c: ${this.c}, x: ${this.x}, y: ${this.y}, z: ${this.z}`;
       };
 
       let resolution = new THREE.Vector2(window.innerWidth, window.innerHeight);
@@ -237,6 +290,10 @@
         let attractor = new LorenzAttractor();
         if (randomize) attractor.randomize();
         console.log("New attractor generated:", attractor);
+
+        /*document.getElementById(
+          "galaxy-settings"
+        ).innerHTML = `a: ${attractor.a}<br/>b: ${attractor.b}<br/>c: ${attractor.c}<br/>x: ${attractor.x}<br/>y: ${attractor.y}<br/>z: ${attractor.z}`;*/
 
         let p = {
           x: attractor.x,
@@ -454,6 +511,20 @@
       }
 
       window.addEventListener("load", init);
+
+      // Init slider
+      const pA = document.getElementById("pA");
+      const pB = document.getElementById("pB");
+      const pC = document.getElementById("pC");
+      const pX = document.getElementById("pX");
+      const pY = document.getElementById("pY");
+      const pZ = document.getElementById("pZ");
+
+      const rangeValue = function (ev) {
+        console.log(ev.target.value / 1000000);
+      };
+
+      pA.addEventListener("input", rangeValue);
     </script>
   </body>
 </html>
