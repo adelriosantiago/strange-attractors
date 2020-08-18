@@ -7,6 +7,11 @@
       name="viewport"
       content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/cash/8.0.0/cash.min.js"
+      integrity="sha512-EDhfzQEETF4We0xjf0WaLReOGNgsUrXpApjCbIb7ruY4DL5wU6iFPyXPXptxdwQShwBvq8iMUQN4C93UVSXD+w=="
+      crossorigin="anonymous"
+    ></script>
     <link
       href="https://fonts.googleapis.com/css2?family=Righteous&family=Roboto:wght@300&display=swap"
       rel="stylesheet"
@@ -30,7 +35,8 @@
         font-family: "Righteous", cursive;
         text-transform: uppercase;
       }
-      h6 {
+      h6,
+      label {
         font-family: "Roboto", cursive;
         margin: 0px;
       }
@@ -81,7 +87,7 @@
       }
       #blog-link {
         position: absolute;
-        bottom: 10px;
+        top: 10px;
         right: 10px;
         font-family: "Roboto", cursive;
         font-size: 10px;
@@ -89,25 +95,35 @@
       }
       #param-controls {
         position: absolute;
-        display: inline-flex;
+        display: block;
         color: white;
         bottom: 10px;
+        left: 0px;
+        width: 100%;
+      }
+      label {
+        position: relative;
         left: 10px;
-        width: 50%;
+        top: 4px;
+        font-size: 12px;
       }
       input[type="range"] {
-        -webkit-appearance: none;
-        -moz-appearance: none;
+        position: relative;
+        left: 10px;
         background: #999;
-        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        width: 97%;
         height: 1px;
         outline: 0;
+        -webkit-appearance: none;
+        -moz-appearance: none;
       }
       input[type="range"]::-webkit-slider-thumb {
         -webkit-appearance: none;
         background-color: #fff;
-        width: 15px;
-        height: 15px;
+        width: 8px;
+        height: 8px;
         border-radius: 50%;
         cursor: pointer;
         transition: 0.3s ease-in-out;
@@ -144,30 +160,40 @@
     <a id="randomize" href="#" class="black-btn" onclick="initScene(true)"
       >RANDOMIZE</a
     >
-    <div id="galaxy-params">
-      <h6 class="active">
-        <span class="pName">A: </span><span class="pVal">123</span>
-      </h6>
-      <h6 class="">
-        <span class="pName">B: </span><span class="pVal">345</span>
-      </h6>
-      <h6 class="">
-        <span class="pName">C: </span><span class="pVal">987</span>
-      </h6>
-    </div>
-
     <div id="param-controls">
-      <input
-        type="range"
-        min="5000000"
-        max="20000000"
-        value="5000000"
-        step="1"
-        id="pA"
-      />
-      <a id="next" href="#" class="black-btn" onclick="next()"
-        >NEXT PARAMETER</a
-      >
+      <div>
+        <label for="AAA">A:</label>
+        <input
+          name="AAA"
+          type="range"
+          min="5000000"
+          max="20000000"
+          value="5000000"
+          step="1"
+        />
+      </div>
+      <div>
+        <label for="BBB">B:</label>
+        <input
+          name="BBB"
+          type="range"
+          min="5000000"
+          max="20000000"
+          value="5000000"
+          step="1"
+        />
+      </div>
+      <div>
+        <label for="CCC">C:</label>
+        <input
+          name="CCC"
+          type="range"
+          min="5000000"
+          max="20000000"
+          value="5000000"
+          step="1"
+        />
+      </div>
     </div>
     <a
       id="blog-link"
@@ -223,6 +249,7 @@
       "use strict";
 
       const NUM_POINTS = 90000;
+      let attractor = new LorenzAttractor();
       let time = 0;
       let renderer, camera, controls, scene;
       let starGeo, stars;
@@ -287,13 +314,8 @@
         attractorObject.name = "att";
         scene.add(attractorObject);
 
-        let attractor = new LorenzAttractor();
         if (randomize) attractor.randomize();
         console.log("New attractor generated:", attractor);
-
-        /*document.getElementById(
-          "galaxy-settings"
-        ).innerHTML = `a: ${attractor.a}<br/>b: ${attractor.b}<br/>c: ${attractor.c}<br/>x: ${attractor.x}<br/>y: ${attractor.y}<br/>z: ${attractor.z}`;*/
 
         let p = {
           x: attractor.x,
