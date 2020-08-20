@@ -183,19 +183,19 @@ function namegen() {
       [4, 4, 1, 1, 4, 4, 3, 3, 6, 6],
     ],
     fn = function (i) {
-      return Math.floor(Math.random() * vowels[i].length);
+      return Math.floor(Math.random() * vowels[i].length)
     },
     name,
     comp,
     i,
     il,
-    c = 0;
+    c = 0
 
-  name = "";
-  comp = mtx[c % mtx.length];
+  name = ""
+  comp = mtx[c % mtx.length]
   for (i = 0, il = comp.length / 2; i < il; i++) {
-    name += vowels[comp[i * 2]][fn(comp[i * 2 + 1])];
+    name += vowels[comp[i * 2]][fn(comp[i * 2 + 1])]
   }
 
-  return name;
+  return name
 }
