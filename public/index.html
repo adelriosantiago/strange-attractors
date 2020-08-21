@@ -7,11 +7,7 @@
       name="viewport"
       content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/cash/8.0.0/cash.min.js"
-      integrity="sha512-EDhfzQEETF4We0xjf0WaLReOGNgsUrXpApjCbIb7ruY4DL5wU6iFPyXPXptxdwQShwBvq8iMUQN4C93UVSXD+w=="
-      crossorigin="anonymous"
-    ></script>
+    <script src="./cash.min.js"></script>
     <link
       href="https://fonts.googleapis.com/css2?family=Righteous&family=Roboto:wght@300&display=swap"
       rel="stylesheet"
@@ -398,7 +394,7 @@
         else attractorObject.position.set(0, 0, 0)
       }
 
-      function createRenderTarget() {
+      const createRenderTarget = () => {
         return new THREE.WebGLRenderTarget(1, 1, {
           wrapS: THREE.ClampToEdgeWrapping,
           wrapT: THREE.ClampToEdgeWrapping,
@@ -412,7 +408,7 @@
       let orthoQuad, orthoCamera, orthoScene
       let shiftShader
 
-      function init() {
+      const init = () => {
         container = document.getElementById("container")
         scene = new THREE.Scene()
         camera = new THREE.PerspectiveCamera(
@@ -498,7 +494,7 @@
         animate()
       }
 
-      function onWindowResized(event) {
+      const onWindowResized = (event) => {
         const w = container.clientWidth
         const h = container.clientHeight
 
@@ -519,7 +515,7 @@
         orthoCamera.updateProjectionMatrix()
       }
 
-      function animate() {
+      const animate = () => {
         requestAnimationFrame(animate)
         controls.update()
 
