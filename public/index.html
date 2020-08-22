@@ -244,9 +244,12 @@
     <script>
       "use strict"
 
-      const NUM_POINTS = 90000
+      const NUM_POINTS = 60000
+      const ANIM_SPEED = 300
+      const ANIMATION_FRAMES = NUM_POINTS * ANIM_SPEED
       let attractor = new LorenzAttractor()
       let time = 0
+      let slowMotion = true
       let renderer, camera, controls, scene
       let starGeo, stars
       let container = document.getElementById("container")
@@ -519,9 +522,11 @@
         requestAnimationFrame(animate)
         controls.update()
 
-        solidLines.geometry.setDrawRange(0, time)
-        smokeLines.geometry.setDrawRange(0, time)
-        if (time < NUM_POINTS) time += 300
+        if (slowMotion === true) {
+          solidLines.geometry.setDrawRange(0, time)
+          smokeLines.geometry.setDrawRange(0, time)
+          if (time < ANIMATION_FRAMES) time += 300
+        }
 
         renderer.render(scene, camera, baseFBO)
         orthoQuad.material = shiftShader
