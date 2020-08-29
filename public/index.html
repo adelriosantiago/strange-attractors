@@ -71,11 +71,17 @@
         left: 10px;
         color: white;
       }
+      .span-param {
+        font-family: "Roboto", cursive;
+        font-size: 12px;
+        position: relative;
+        top: 4px;
+        left: 10px;
+      }
       #galaxy-params {
         position: absolute;
         bottom: 100px;
         left: 10px;
-        color: white;
       }
       #next {
         position: absolute;
@@ -109,7 +115,7 @@
         background: #999;
         margin-left: auto;
         margin-right: auto;
-        width: 97%;
+        width: 90%;
         height: 1px;
         outline: 0;
         -webkit-appearance: none;
@@ -156,39 +162,43 @@
     <a id="randomize" href="#" class="black-btn" onclick="initScene(true)"
       >RANDOMIZE</a
     >
+    <h6 id="galaxy-settings"></h6>
     <div id="param-controls">
       <div>
-        <label for="AAA">A:</label>
+        <label for="a">A:</label>
         <input
-          name="AAA"
+          name="a"
           type="range"
           min="5000000"
           max="20000000"
-          value="5000000"
+          value="10000000"
           step="1"
         />
+        <span id="legend-a" class="span-param"></span>
       </div>
       <div>
-        <label for="BBB">B:</label>
+        <label for="b">B:</label>
         <input
-          name="BBB"
+          name="b"
           type="range"
           min="5000000"
-          max="20000000"
-          value="5000000"
+          max="50000000"
+          value="28000000"
           step="1"
         />
+        <span id="legend-b" class="span-param"></span>
       </div>
       <div>
-        <label for="CCC">C:</label>
+        <label for="c">C:</label>
         <input
-          name="CCC"
+          name="c"
           type="range"
-          min="5000000"
-          max="20000000"
-          value="5000000"
+          min="1000000"
+          max="5000000"
+          value="2666666"
           step="1"
         />
+        <span id="legend-c" class="span-param"></span>
       </div>
     </div>
     <a
@@ -244,9 +254,10 @@
     <script>
       "use strict"
 
-      const NUM_POINTS = 60000
+      const NUM_POINTS = 30000
       const ANIM_SPEED = 300
       const ANIMATION_FRAMES = NUM_POINTS * ANIM_SPEED
+      const SLIDER_PRECISION = 1000000
       let attractor = new LorenzAttractor()
       let time = 0
       let slowMotion = true
@@ -269,7 +280,7 @@
 
         this.color = "0xffffff"
 
-        this.h = 0.004
+        this.stepSize = 0.004
         this.scale = 10
         this.spread = 0.5
 
@@ -281,31 +292,30 @@
         let ny = x * (this.b - z) - y
         let nz = x * y - this.c * z
 
-        x += this.h * nx
-        y += this.h * ny
-        z += this.h * nz
+        x += this.stepSize * nx
+        y += this.stepSize * ny
+        z += this.stepSize * nz
 
-        return { x: x, y: y, z: z }
+        return { x, y, z }
       }
 
-      LorenzAttractor.prototype.randomize = function () {
-        this.a = Math.random() * 15 + 5
-        this.b = Math.random() * 45 + 5
-        this.c = (Math.random() * 4 + 1) / 10
+      const randomize = function () {
+        /*const x = (Math.random() - 0.5) * 10
+        const y = (Math.random() - 0.5) * 10
+        const z = (Math.random() - 0.5) * 10*/
 
-        this.x = (Math.random() - 0.5) * 10
-        this.y = (Math.random() - 0.5) * 10
-        this.z = (Math.random() - 0.5) * 10
-
-        this.color = `0x${Math.floor(Math.random() * 16777215).toString(16)}`
-
-        document.getElementById("galaxy-name").innerHTML = namegen()
+        $(`input[name='a']`).val((Math.random() * 15 + 5) * SLIDER_PRECISION) // Good ranges: 5.0 -> 20.0
+        $(`input[name='b']`).val((Math.random() * 45 + 5) * SLIDER_PRECISION) // Good ranges: 5.0 -> 50.0
+        $(`input[name='c']`).val(
+          ((Math.random() * 4 + 1) / 10) * SLIDER_PRECISION // Good ranges: 1.0 -> 5.0
+        )
+        $("input[type='range']").trigger("input")
       }
 
       let resolution = new THREE.Vector2(window.innerWidth, window.innerHeight)
       let smokeLines, solidLines
 
-      function initScene(randomize) {
+      function initScene(retryIfFailed) {
         let points = []
 
         scene.remove(scene.getObjectByName("att"))
@@ -313,22 +323,32 @@
         attractorObject.name = "att"
         scene.add(attractorObject)
 
-        if (randomize) attractor.randomize()
-        console.log("New attractor generated:", attractor)
+        document.getElementById(`legend-a`).innerHTML = +attractor.a
+        document.getElementById(`legend-b`).innerHTML = +attractor.b
+        document.getElementById(`legend-c`).innerHTML = +attractor.c
+
+        /*// TODO: Color and name must depend entirely on values above
+        attractor.color = `0x${Math.floor(Math.random() * 16777215).toString(
+          16
+        )}`
+        document.getElementById("galaxy-name").innerHTML = namegen()*/
+
+        time = 0
 
         let p = {
           x: attractor.x,
           y: attractor.y,
           z: attractor.z,
         }
-
-        time = 0
         for (let j = 0; j < NUM_POINTS; j++) {
           p = attractor.generatePoint(p.x, p.y, p.z)
 
           if (isNaN(p.x) || isNaN(p.y) || isNaN(p.z)) {
-            console.log("Failed, retry")
-            initScene(true)
+            console.log("Attractor failed.")
+            if (retryIfFailed) {
+              console.log("Retrying.")
+              randomize()
+            }
             return
           }
 
@@ -535,19 +555,17 @@
 
       window.addEventListener("load", init)
 
-      // Init slider
-      const pA = document.getElementById("pA")
-      const pB = document.getElementById("pB")
-      const pC = document.getElementById("pC")
-      const pX = document.getElementById("pX")
-      const pY = document.getElementById("pY")
-      const pZ = document.getElementById("pZ")
+      // Init sliders
+      $("input[type='range']").on("input change", (el) => {
+        const param = el.target.name
+        const val = el.target.value / SLIDER_PRECISION
+        console.log("slider", param, val)
 
-      const rangeValue = function (ev) {
-        console.log(ev.target.value / 1000000)
-      }
-
-      pA.addEventListener("input", rangeValue)
+        attractor[param] = val
+        slowMotion = false
+        initScene(false)
+      })
+      $("input[type='range']").trigger("input")
     </script>
   </body>
 </html>
