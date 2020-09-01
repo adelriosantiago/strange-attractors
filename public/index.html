@@ -324,15 +324,16 @@
         attractorObject.name = "att"
         scene.add(attractorObject)
 
-        document.getElementById(`legend-a`).innerHTML = +attractor.a
-        document.getElementById(`legend-b`).innerHTML = +attractor.b
-        document.getElementById(`legend-c`).innerHTML = +attractor.c
+        document.getElementById(`legend-a`).innerHTML = attractor.a
+        document.getElementById(`legend-b`).innerHTML = attractor.b
+        document.getElementById(`legend-c`).innerHTML = attractor.c
 
-        /*// TODO: Color and name must depend entirely on values above
-        attractor.color = `0x${Math.floor(Math.random() * 16777215).toString(
+        attractor.color = `0x${Math.floor((attractor.a / 20) * 255).toString(
           16
-        )}`
-        document.getElementById("galaxy-name").innerHTML = namegen()*/
+        )}${Math.floor((attractor.b / 50) * 255).toString(16)}${Math.floor(
+          (attractor.c / 5) * 255
+        ).toString(16)}`
+        document.getElementById("galaxy-name").innerHTML = namegen()
 
         time = 0
 
@@ -384,7 +385,7 @@
             resolution: resolution,
             sizeAttenuation: true,
             lineWidth: 1.5 * attractor.scale * attractor.spread,
-            opacity: 0.025,
+            opacity: 0.05,
             near: camera.near,
             far: camera.far,
             depthWrite: false,
