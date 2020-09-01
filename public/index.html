@@ -268,17 +268,13 @@
       function LorenzAttractor() {
         this.id = "lorenz"
 
-        // Common settings: { a: 6.970773956984983, b: 45.21069279106107. c: 0.40074195636847343 }
-
         this.a = 10
         this.b = 28
-        this.c = 8 / 3
+        this.c = 2.666666
 
         this.x = 0
         this.y = 10
         this.z = 10
-
-        this.color = "0xffffff"
 
         this.stepSize = 0.004
         this.scale = 10
@@ -323,17 +319,6 @@
         let attractorObject = new THREE.Object3D()
         attractorObject.name = "att"
         scene.add(attractorObject)
-
-        document.getElementById(`legend-a`).innerHTML = attractor.a
-        document.getElementById(`legend-b`).innerHTML = attractor.b
-        document.getElementById(`legend-c`).innerHTML = attractor.c
-
-        attractor.color = `0x${Math.floor((attractor.a / 20) * 255).toString(
-          16
-        )}${Math.floor((attractor.b / 50) * 255).toString(16)}${Math.floor(
-          (attractor.c / 5) * 255
-        ).toString(16)}`
-        document.getElementById("galaxy-name").innerHTML = namegen()
 
         time = 0
 
@@ -417,6 +402,18 @@
 
         if (attractor.autoCenter) attractorObject.position.copy(center)
         else attractorObject.position.set(0, 0, 0)
+
+        // Update UI
+        document.getElementById(`legend-a`).innerHTML = attractor.a
+        document.getElementById(`legend-b`).innerHTML = attractor.b
+        document.getElementById(`legend-c`).innerHTML = attractor.c
+
+        attractor.color = `0x${Math.floor((attractor.a / 20) * 255).toString(
+          16
+        )}${Math.floor((attractor.b / 50) * 255).toString(16)}${Math.floor(
+          (attractor.c / 5) * 255
+        ).toString(16)}`
+        document.getElementById("galaxy-name").innerHTML = namegen()
       }
 
       const createRenderTarget = () => {
@@ -559,11 +556,8 @@
 
       // Init sliders
       $("input[type='range']").on("input change", (el) => {
-        const param = el.target.name
-        const val = el.target.value / SLIDER_PRECISION
-        console.log("slider", param, val)
-
-        attractor[param] = val
+        el = el.target
+        attractor[el.name] = el.value / SLIDER_PRECISION
         slowMotion = false
         initScene(false)
       })
