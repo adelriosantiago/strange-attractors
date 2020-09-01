@@ -511,7 +511,7 @@
         orthoQuad = new THREE.Mesh(new THREE.PlaneBufferGeometry(1, 1))
         orthoScene.add(orthoQuad)
 
-        initScene(false)
+        $("input[type='range']").trigger("input") // Trigger initScene
 
         onWindowResized()
         window.addEventListener("resize", onWindowResized)
@@ -567,7 +567,6 @@
         slowMotion = false
         initScene(false)
       })
-      $("input[type='range']").trigger("input")
     </script>
   </body>
 </html>
