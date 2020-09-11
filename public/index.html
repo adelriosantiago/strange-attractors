@@ -280,8 +280,6 @@
         this.stepSize = 0.004
         this.scale = 10
         this.spread = 0.5
-
-        this.autoCenter = true
       }
 
       LorenzAttractor.prototype.generatePoint = function (x, y, z) {
@@ -345,7 +343,7 @@
           points.push(attractor.scale * p.z)
         }
 
-        // Smoke lines
+        // Generate points for both solid and smoke lines
         var geometry = new THREE.Geometry()
         for (let j = 0; j < points.length; j += 3) {
           let v = new THREE.Vector3(points[j], points[j + 1], points[j + 2])
@@ -358,7 +356,9 @@
         center.multiplyScalar(0.5)
         center.add(geometry.boundingBox.min)
         center.multiplyScalar(-1)
+        attractorObject.position.copy(center)
 
+        // Smoke lines
         let line = new THREE.MeshLine()
         line.setGeometry(geometry, (p) => {
           return 2 + Math.sin(50 * p)
@@ -400,9 +400,6 @@
           })
         )
         attractorObject.add(solidLines)
-
-        if (attractor.autoCenter) attractorObject.position.copy(center)
-        else attractorObject.position.set(0, 0, 0)
 
         // Update UI
         document.getElementById(`legend-a`).innerHTML = attractor.a
