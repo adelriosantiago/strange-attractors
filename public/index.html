@@ -255,51 +255,27 @@
     <script>
       "use strict"
 
-      const NUM_POINTS = 30000
+      const NUM_POINTS = 20000
       const ANIM_SPEED = 300
       const ANIMATION_FRAMES = NUM_POINTS * ANIM_SPEED
       const SLIDER_PRECISION = 1000000
-      let attractor = new LorenzAttractor()
+      const SPREAD = 0.8
+      let attractor = {
+        a: 10,
+        b: 28,
+        c: 2.666666,
+        x: 0,
+        y: 10,
+        z: 10,
+        color: "0xFFFFFF",
+      }
       let time = 0
       let slowMotion = true
       let renderer, camera, controls, scene
       let starGeo, stars
       let container = document.getElementById("container")
 
-      function LorenzAttractor() {
-        this.id = "lorenz"
-
-        this.a = 10
-        this.b = 28
-        this.c = 2.666666
-
-        this.x = 0
-        this.y = 10
-        this.z = 10
-
-        this.stepSize = 0.004
-        this.scale = 10
-        this.spread = 0.5
-      }
-
-      LorenzAttractor.prototype.generatePoint = function (x, y, z) {
-        let nx = this.a * (y - x)
-        let ny = x * (this.b - z) - y
-        let nz = x * y - this.c * z
-
-        x += this.stepSize * nx
-        y += this.stepSize * ny
-        z += this.stepSize * nz
-
-        return { x, y, z }
-      }
-
       const randomize = function () {
-        // TODO: Implement these values too?
-        /*const x = (Math.random() - 0.5) * 10
-        const y = (Math.random() - 0.5) * 10
-        const z = (Math.random() - 0.5) * 10*/
-
         $(`input[name='a']`).val((Math.random() * 15 + 5) * SLIDER_PRECISION) // Good ranges: 5.0 -> 20.0
         $(`input[name='b']`).val((Math.random() * 45 + 5) * SLIDER_PRECISION) // Good ranges: 5.0 -> 50.0
         $(`input[name='c']`).val(
@@ -312,7 +288,14 @@
       let smokeLines, solidLines
 
       function initScene(retryIfFailed) {
-        let points = []
+        lorenz.init(
+          attractor.a,
+          attractor.c,
+          attractor.b,
+          attractor.x,
+          attractor.y,
+          attractor.z
+        )
 
         scene.remove(scene.getObjectByName("att"))
         let attractorObject = new THREE.Object3D()
@@ -321,34 +304,15 @@
 
         time = 0
 
-        let p = {
-          x: attractor.x,
-          y: attractor.y,
-          z: attractor.z,
-        }
-        for (let j = 0; j < NUM_POINTS; j++) {
-          p = attractor.generatePoint(p.x, p.y, p.z)
+        lorenz.next(NUM_POINTS)
+        let points = lorenz.points()
 
-          if (isNaN(p.x) || isNaN(p.y) || isNaN(p.z)) {
-            console.log("Attractor failed.")
-            if (retryIfFailed) {
-              console.log("Retrying.")
-              randomize()
-            }
-            return
-          }
-
-          points.push(attractor.scale * p.x)
-          points.push(attractor.scale * p.y)
-          points.push(attractor.scale * p.z)
-        }
-
-        // Generate points for both solid and smoke lines
+        // Generate points for smoke lines
         var geometry = new THREE.Geometry()
-        for (let j = 0; j < points.length; j += 3) {
-          let v = new THREE.Vector3(points[j], points[j + 1], points[j + 2])
+        points.forEach((e) => {
+          let v = new THREE.Vector3(e[0], e[1], e[2])
           geometry.vertices.push(v)
-        }
+        })
 
         geometry.computeBoundingBox()
         let center = geometry.boundingBox.max.clone()
@@ -358,10 +322,9 @@
         center.multiplyScalar(-1)
         attractorObject.position.copy(center)
 
-        // Smoke lines
         let line = new THREE.MeshLine()
         line.setGeometry(geometry, (p) => {
-          return 2 + Math.sin(50 * p)
+          return 2 + Math.sin(500 * p)
         })
 
         smokeLines = new THREE.Mesh(
@@ -370,7 +333,7 @@
             color: new THREE.Color(eval(attractor.color)),
             resolution: resolution,
             sizeAttenuation: true,
-            lineWidth: 1.5 * attractor.scale * attractor.spread,
+            lineWidth: 1.5 * SPREAD,
             opacity: 0.05,
             near: camera.near,
             far: camera.far,
@@ -384,7 +347,7 @@
 
         // Solid lines
         var geometry = new THREE.BufferGeometry()
-        let positions = new Float32Array(points)
+        let positions = new Float32Array(points.flat())
         geometry.addAttribute(
           "position",
           new THREE.BufferAttribute(positions, 3)
@@ -434,13 +397,13 @@
         container = document.getElementById("container")
         scene = new THREE.Scene()
         camera = new THREE.PerspectiveCamera(
-          70,
+          80,
           window.innerWidth / window.innerHeight,
           0.1,
           10000
         )
         camera.target = new THREE.Vector3(0, 0, 0)
-        camera.position.set(0, 0, 200)
+        camera.position.set(0, 0, 50)
         camera.lookAt(camera.target)
         scene.add(camera)
 
