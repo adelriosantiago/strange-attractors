@@ -276,10 +276,10 @@
       let container = document.getElementById("container")
 
       const randomize = function () {
-        $(`input[name='a']`).val((Math.random() * 15 + 5) * SLIDER_PRECISION) // Good ranges: 5.0 -> 20.0
-        $(`input[name='b']`).val((Math.random() * 45 + 5) * SLIDER_PRECISION) // Good ranges: 5.0 -> 50.0
+        $(`input[name='a']`).val((Math.random() * 15 + 5) * SLIDER_PRECISION) // Good ranges: 5.0 -> 20.0 (sigma)
+        $(`input[name='b']`).val((Math.random() * 45 + 5) * SLIDER_PRECISION) // Good ranges: 5.0 -> 50.0 (rho)
         $(`input[name='c']`).val(
-          ((Math.random() * 4 + 1) / 10) * SLIDER_PRECISION // Good ranges: 1.0 -> 5.0
+          ((Math.random() * 4 + 1) / 10) * SLIDER_PRECISION // Good ranges: 1.0 -> 5.0 (beta)
         )
         $("input[type='range']").trigger("input")
       }
