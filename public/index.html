@@ -305,14 +305,13 @@
         time = 0
 
         lorenz.next(NUM_POINTS)
-        let points = lorenz.points()
 
         // Generate points for smoke lines
         var geometry = new THREE.Geometry()
-        points.forEach((e) => {
-          let v = new THREE.Vector3(e[0], e[1], e[2])
-          geometry.vertices.push(v)
-        })
+
+        lorenz
+          .points(true, THREE.Vector3)
+          .forEach((e) => geometry.vertices.push(e))
 
         geometry.computeBoundingBox()
         let center = geometry.boundingBox.max.clone()
@@ -347,7 +346,7 @@
 
         // Solid lines
         var geometry = new THREE.BufferGeometry()
-        let positions = new Float32Array(points.flat())
+        let positions = new Float32Array(lorenz.points())
         geometry.addAttribute(
           "position",
           new THREE.BufferAttribute(positions, 3)

@@ -26,5 +26,7 @@
   "dependencies": {
     "express": "^4.17.1"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "lorenz-attractor-3d": "^1.0.8"
+  }
 }
