@@ -71,6 +71,13 @@
         left: 10px;
         color: white;
       }
+      #formula {
+        position: absolute;
+        bottom: 50px;
+        left: 10px;
+        color: white;
+        font-family: "Roboto", cursive;
+      }
       .span-param {
         font-family: "Roboto", cursive;
         font-size: 12px;
@@ -162,10 +169,16 @@
     <a id="randomize" href="#" class="black-btn" onclick="randomize()"
       >RANDOMIZE</a
     >
+    <div id="formula">
+      <p>Formula:</p>
+      <p>x<sub>n + 1</sub> = σ * (y - x);</p>
+      <p>y<sub>n + 1</sub> = x * (ρ - z) - y;</p>
+      <p>z<sub>n + 1</sub> = x * y - β * z;</p>
+    </div>
     <h6 id="galaxy-settings"></h6>
     <div id="param-controls">
       <div>
-        <label for="a">A:</label>
+        <label for="a">σ:</label>
         <input
           name="a"
           type="range"
@@ -177,7 +190,7 @@
         <span id="legend-a" class="span-param"></span>
       </div>
       <div>
-        <label for="b">B:</label>
+        <label for="b">ρ:</label>
         <input
           name="b"
           type="range"
@@ -189,7 +202,7 @@
         <span id="legend-b" class="span-param"></span>
       </div>
       <div>
-        <label for="c">C:</label>
+        <label for="c">β:</label>
         <input
           name="c"
           type="range"
