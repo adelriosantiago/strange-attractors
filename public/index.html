@@ -12,6 +12,11 @@
       href="https://fonts.googleapis.com/css2?family=Righteous&family=Roboto:wght@300&display=swap"
       rel="stylesheet"
     />
+    <script src="./three.min.js"></script>
+    <script src="./OrbitControls.min.js"></script>
+    <script src="./THREE.MeshLine.min.js"></script>
+    <script src="./namegen.js"></script>
+    <script src="./lorenz.build.js"></script>
     <style>
       html,
       body,
@@ -197,13 +202,7 @@
     >
     <div id="container"></div>
 
-    <script src="./three.min.js"></script>
-    <script src="./OrbitControls.min.js"></script>
-    <script src="./THREE.MeshLine.min.js"></script>
-    <script src="./namegen.js"></script>
-    <script src="./lorenz.build.js"></script>
-
-    <script type="x-shader/x-vertex" id="ortho-vs">
+    <script id="ortho-vs" type="x-shader/x-vertex">
       precision highp float;
 
       attribute vec3 position;
@@ -220,7 +219,7 @@
       }
     </script>
 
-    <script type="x-shader/x-fragment" id="shift-fs">
+    <script id="shift-fs" type="x-shader/x-fragment">
       precision highp float;
 
       uniform sampler2D inputTexture;
