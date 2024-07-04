@@ -1,0 +1,3 @@
+lorenz.adelriosantiago.com {
+    reverse_proxy localhost:8844
+}
