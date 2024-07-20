@@ -25,6 +25,7 @@
         padding: 0px;
         width: 100%;
         height: 100%;
+        overflow: hidden;
       }
       h1,
       h2,
@@ -78,10 +79,14 @@
       }
       #formula {
         position: absolute;
-        bottom: 50px;
-        left: 10px;
+        bottom: 10px;
+        right: 10px;
         color: white;
         font-family: "Roboto", cursive;
+      }
+      #formula p {
+        margin-block-start: 3px;
+        margin-block-end: 3px;
       }
       .span-param {
         font-family: "Roboto", cursive;
@@ -113,7 +118,7 @@
         color: white;
         bottom: 10px;
         left: 0px;
-        width: 100%;
+        width: 80%;
       }
       label {
         position: relative;
@@ -136,8 +141,8 @@
       input[type="range"]::-webkit-slider-thumb {
         -webkit-appearance: none;
         background-color: #fff;
-        width: 8px;
-        height: 8px;
+        width: 15px;
+        height: 15px;
         border-radius: 50%;
         cursor: pointer;
         transition: 0.3s ease-in-out;
@@ -195,9 +200,7 @@
         <span id="legend-c" class="span-param"></span>
       </div>
     </div>
-    <a
-      id="blog-link"
-      href="http://adelriosantiago.com/gitblog/eng/strange-attractors"
+    <a id="blog-link" href="https://www.adelriosantiago.com/gitblog"
       >GO TO ARTICLE</a
     >
     <div id="container"></div>
