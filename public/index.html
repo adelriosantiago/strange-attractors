@@ -17,6 +17,27 @@
     <script src="/THREE.MeshLine.min.js"></script>
     <script src="/namegen.js"></script>
     <script src="/lorenz.build.js"></script>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"
+      integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+"
+      crossorigin="anonymous"
+    />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"
+      integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+      integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk"
+      crossorigin="anonymous"
+      onload="renderMathInElement(document.body);"
+    ></script>
+
     <style>
       html,
       body,
@@ -79,8 +100,9 @@
       }
       #formula {
         position: absolute;
+        width: 260px;
         bottom: 10px;
-        right: 10px;
+        right: 30px;
         color: white;
         font-family: "Roboto", cursive;
       }
@@ -117,7 +139,7 @@
         display: block;
         color: white;
         bottom: 10px;
-        left: 0px;
+        left: 15px;
         width: 80%;
       }
       label {
@@ -141,8 +163,8 @@
       input[type="range"]::-webkit-slider-thumb {
         -webkit-appearance: none;
         background-color: #fff;
-        width: 15px;
-        height: 15px;
+        width: 12px;
+        height: 12px;
         border-radius: 50%;
         cursor: pointer;
         transition: 0.3s ease-in-out;
@@ -157,9 +179,11 @@
     >
     <div id="formula">
       <p>Formula:</p>
-      <p>x<sub>n + 1</sub> = σ * (y - x)</p>
-      <p>y<sub>n + 1</sub> = x * (ρ - z) - y</p>
-      <p>z<sub>n + 1</sub> = x * y - β * z</p>
+      <span
+        >\begin{align} \frac{\mathrm{d}x}{\mathrm{d}t} &= \sigma (y - x),
+        \\[6pt] \frac{\mathrm{d}y}{\mathrm{d}t} &= x (\rho - z) - y, \\[6pt]
+        \frac{\mathrm{d}z}{\mathrm{d}t} &= x y - \beta z. \end{align}</span
+      >
     </div>
     <h6 id="galaxy-settings"></h6>
     <div id="param-controls">
