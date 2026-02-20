@@ -7,7 +7,7 @@
       name="viewport"
       content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
-    <script src="./cash.min.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
     <link
       href="https://fonts.googleapis.com/css2?family=Righteous&family=Roboto:wght@300&display=swap"
       rel="stylesheet"
@@ -41,6 +41,7 @@
     <style>
       html,
       body,
+      #app,
       #container {
         margin: 0px;
         padding: 0px;
@@ -176,105 +177,107 @@
       }
     </style>
   </head>
-  <body>
-    <h1 id="loading">LOADING...</h1>
-    <h2 id="galaxy-name">LORENZ I</h2>
-    <a id="randomize" href="#" class="black-btn" onclick="randomize()"
-      >RANDOMIZE</a
-    >
-    <button id="save-attractor" class="black-btn" type="button" onclick="saveAttractor()">
-      SAVE
-    </button>
-    <div id="formula">
-      <p>Formula:</p>
-      <span
-        >\begin{align} \frac{\mathrm{d}x}{\mathrm{d}t} &= \sigma (y - x),
-        \\[6pt] \frac{\mathrm{d}y}{\mathrm{d}t} &= x (\rho - z) - y, \\[6pt]
-        \frac{\mathrm{d}z}{\mathrm{d}t} &= x y - \beta z. \end{align}</span
-      >
-    </div>
-    <h6 id="galaxy-settings"></h6>
-    <div id="param-controls">
-      <div>
-        <label for="a">σ:</label>
-        <input
-          name="a"
-          type="range"
-          min="5000000"
-          max="20000000"
-          value="10000000"
-          step="1"
-        />
-        <span id="legend-a" class="span-param"></span>
+    <body>
+    <div id="app">
+      <h1 id="loading">LOADING...</h1>
+      <h2 id="galaxy-name">{{ galaxyName }}</h2>
+      <button id="randomize" type="button" class="black-btn" @click="randomize">
+        RANDOMIZE
+      </button>
+      <button id="save-attractor" class="black-btn" type="button" @click="saveAttractor">
+        SAVE
+      </button>
+      <div id="formula">
+        <p>Formula:</p>
+        <span
+          >\begin{align} \frac{\mathrm{d}x}{\mathrm{d}t} &= \sigma (y - x),
+          \\[6pt] \frac{\mathrm{d}y}{\mathrm{d}t} &= x (\rho - z) - y, \\[6pt]
+          \frac{\mathrm{d}z}{\mathrm{d}t} &= x y - \beta z. \end{align}</span
+        >
       </div>
-      <div>
-        <label for="b">ρ:</label>
-        <input
-          name="b"
-          type="range"
-          min="5000000"
-          max="50000000"
-          value="28000000"
-          step="1"
-        />
-        <span id="legend-b" class="span-param"></span>
+      <h6 id="galaxy-settings"></h6>
+      <div id="param-controls">
+        <div>
+          <label for="a">sigma:</label>
+          <input
+            name="a"
+            type="range"
+            min="5000000"
+            max="20000000"
+            step="1"
+            v-model.number="sliderState.a"
+            @input="onSliderChange"
+          />
+          <span id="legend-a" class="span-param">{{ attractorValues.a }}</span>
+        </div>
+        <div>
+          <label for="b">rho:</label>
+          <input
+            name="b"
+            type="range"
+            min="5000000"
+            max="50000000"
+            step="1"
+            v-model.number="sliderState.b"
+            @input="onSliderChange"
+          />
+          <span id="legend-b" class="span-param">{{ attractorValues.b }}</span>
+        </div>
+        <div>
+          <label for="c">beta:</label>
+          <input
+            name="c"
+            type="range"
+            min="1000000"
+            max="5000000"
+            step="1"
+            v-model.number="sliderState.c"
+            @input="onSliderChange"
+          />
+          <span id="legend-c" class="span-param">{{ attractorValues.c }}</span>
+        </div>
+        <div>
+          <label for="x">x:</label>
+          <input
+            name="x"
+            type="range"
+            min="-20000000"
+            max="20000000"
+            step="1"
+            v-model.number="sliderState.x"
+            @input="onSliderChange"
+          />
+          <span id="legend-x" class="span-param">{{ attractorValues.x }}</span>
+        </div>
+        <div>
+          <label for="y">y:</label>
+          <input
+            name="y"
+            type="range"
+            min="-20000000"
+            max="20000000"
+            step="1"
+            v-model.number="sliderState.y"
+            @input="onSliderChange"
+          />
+          <span id="legend-y" class="span-param">{{ attractorValues.y }}</span>
+        </div>
+        <div>
+          <label for="z">z:</label>
+          <input
+            name="z"
+            type="range"
+            min="-20000000"
+            max="20000000"
+            step="1"
+            v-model.number="sliderState.z"
+            @input="onSliderChange"
+          />
+          <span id="legend-z" class="span-param">{{ attractorValues.z }}</span>
+        </div>
       </div>
-      <div>
-        <label for="c">β:</label>
-        <input
-          name="c"
-          type="range"
-          min="1000000"
-          max="5000000"
-          value="2666666"
-          step="1"
-        />
-        <span id="legend-c" class="span-param"></span>
-      </div>
-      <div>
-        <label for="x">x:</label>
-        <input
-          name="x"
-          type="range"
-          min="-20000000"
-          max="20000000"
-          value="0"
-          step="1"
-        />
-        <span id="legend-x" class="span-param"></span>
-      </div>
-      <div>
-        <label for="y">y:</label>
-        <input
-          name="y"
-          type="range"
-          min="-20000000"
-          max="20000000"
-          value="10000000"
-          step="1"
-        />
-        <span id="legend-y" class="span-param"></span>
-      </div>
-      <div>
-        <label for="z">z:</label>
-        <input
-          name="z"
-          type="range"
-          min="-20000000"
-          max="20000000"
-          value="10000000"
-          step="1"
-        />
-        <span id="legend-z" class="span-param"></span>
-      </div>
-    </div>
-    <!-- TODO: Restore -->
-    <!-- <a id="blog-link" href="https://www.adelriosantiago.com/gitblog"
-      >GO TO ARTICLE</a
-    > -->
-    <div id="container"></div>
-
-    <script id="ortho-vs" type="x-shader/x-vertex">
+      <div id="container" ref="container"></div>
+    </div>    <script id="ortho-vs" type="x-shader/x-vertex">
       precision highp float;
 
       attribute vec3 position;
@@ -312,308 +315,271 @@
       }
     </script>
 
-    <script>
+            <script>
       "use strict"
-
       const NUM_POINTS = 20000
       const ANIM_SPEED = 300
       const ANIMATION_FRAMES = NUM_POINTS * ANIM_SPEED
       const SLIDER_PRECISION = 1000000
       const SPREAD = 0.8
-      let attractor = {
-        a: 10,
-        b: 28,
-        c: 2.666666,
-        x: 0,
-        y: 10,
-        z: 10,
-        color: "0xFFFFFF",
-      }
-      let time = 0
-      let slowMotion = true
+      const { createApp } = Vue
+
       let renderer, camera, controls, scene
-      let starGeo, stars
-      let container = document.getElementById("container")
-
-      const randomize = function () {
-        $(`input[name='a']`).val((Math.random() * 15 + 5) * SLIDER_PRECISION) // Good ranges: 5.0 -> 20.0 (sigma)
-        $(`input[name='b']`).val((Math.random() * 45 + 5) * SLIDER_PRECISION) // Good ranges: 5.0 -> 50.0 (rho)
-        $(`input[name='c']`).val(
-          ((Math.random() * 4 + 1) / 10) * SLIDER_PRECISION // Good ranges: 1.0 -> 5.0 (beta)
-        )
-        $("input[type='range']").trigger("input")
-      }
-
-      const saveAttractor = async function () {
-        const payload = {
-          attractorName: document.getElementById("galaxy-name").textContent.trim(),
-          a: attractor.a,
-          b: attractor.b,
-          c: attractor.c,
-        }
-
-        try {
-          const response = await fetch("/save-attractor", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(payload),
-          })
-
-          if (!response.ok) {
-            throw new Error("save failed")
-          }
-
-          const result = await response.json()
-          alert(`Saved: ${result.fileName}`)
-        } catch (error) {
-          alert("Failed to save attractor.")
-        }
-      }
-
-      let resolution = new THREE.Vector2(window.innerWidth, window.innerHeight)
       let smokeLines, solidLines
-
-      function initScene(retryIfFailed) {
-        lorenz.init(
-          attractor.a,
-          attractor.c,
-          attractor.b,
-          attractor.x,
-          attractor.y,
-          attractor.z
-        )
-
-        scene.remove(scene.getObjectByName("att"))
-        let attractorObject = new THREE.Object3D()
-        attractorObject.name = "att"
-        scene.add(attractorObject)
-
-        time = 0
-
-        lorenz.next(NUM_POINTS)
-
-        // Generate points for smoke lines
-        var geometry = new THREE.Geometry()
-
-        lorenz
-          .points(true, THREE.Vector3)
-          .forEach((e) => geometry.vertices.push(e))
-
-        geometry.computeBoundingBox()
-        let center = geometry.boundingBox.max.clone()
-        center.sub(geometry.boundingBox.min)
-        center.multiplyScalar(0.5)
-        center.add(geometry.boundingBox.min)
-        center.multiplyScalar(-1)
-        attractorObject.position.copy(center)
-
-        let line = new THREE.MeshLine()
-        line.setGeometry(geometry, (p) => {
-          return 2 + Math.sin(500 * p)
-        })
-
-        smokeLines = new THREE.Mesh(
-          line.geometry,
-          new THREE.MeshLineMaterial({
-            color: new THREE.Color(eval(attractor.color)),
-            resolution: resolution,
-            sizeAttenuation: true,
-            lineWidth: 1.5 * SPREAD,
-            opacity: 0.05,
-            near: camera.near,
-            far: camera.far,
-            depthWrite: false,
-            depthTest: false,
-            transparent: true,
-            blending: THREE.AdditiveBlending,
-          })
-        )
-        attractorObject.add(smokeLines)
-
-        // Solid lines
-        var geometry = new THREE.BufferGeometry()
-        let positions = new Float32Array(lorenz.points())
-        geometry.addAttribute(
-          "position",
-          new THREE.BufferAttribute(positions, 3)
-        )
-
-        solidLines = new THREE.Line(
-          geometry,
-          new THREE.LineBasicMaterial({
-            color: new THREE.Color(0xffffff),
-            opacity: 0.25,
-            transparent: true,
-            blending: THREE.AdditiveBlending,
-          })
-        )
-        attractorObject.add(solidLines)
-
-        // Update UI
-        document.getElementById(`legend-a`).innerHTML = attractor.a
-        document.getElementById(`legend-b`).innerHTML = attractor.b
-        document.getElementById(`legend-c`).innerHTML = attractor.c
-        document.getElementById(`legend-x`).innerHTML = attractor.x
-        document.getElementById(`legend-y`).innerHTML = attractor.y
-        document.getElementById(`legend-z`).innerHTML = attractor.z
-
-        attractor.color = `0x${Math.abs(
-          Math.floor((attractor.a / 20) * 255)
-        ).toString(16)}${Math.abs(
-          Math.floor((attractor.b / 50) * 255)
-        ).toString(16)}${Math.abs(Math.floor((attractor.c / 5) * 255)).toString(
-          16
-        )}`
-        document.getElementById("galaxy-name").innerHTML = namegen()
-      }
-
-      const createRenderTarget = () => {
-        return new THREE.WebGLRenderTarget(1, 1, {
-          wrapS: THREE.ClampToEdgeWrapping,
-          wrapT: THREE.ClampToEdgeWrapping,
-          format: THREE.RGBAFormat,
-          stencilBuffer: false,
-          depthBuffer: true,
-        })
-      }
-
+      let resolution = new THREE.Vector2(window.innerWidth, window.innerHeight)
       let baseFBO
       let orthoQuad, orthoCamera, orthoScene
       let shiftShader
+      let time = 0
+      let slowMotion = true
 
-      const init = () => {
-        container = document.getElementById("container")
-        scene = new THREE.Scene()
-        camera = new THREE.PerspectiveCamera(
-          80,
-          window.innerWidth / window.innerHeight,
-          0.1,
-          10000
-        )
-        camera.target = new THREE.Vector3(0, 0, 0)
-        camera.position.set(0, 0, 50)
-        camera.lookAt(camera.target)
-        scene.add(camera)
-
-        // Star creation
-        starGeo = new THREE.Geometry()
-        for (let i = 0; i < 3000; i++) {
-          let star = new THREE.Vector3(
-            Math.random() * 10000 - 5000,
-            Math.random() * 10000 - 5000,
-            Math.random() * 10000 - 5000
-          )
-          starGeo.vertices.push(star)
-        }
-
-        const sprite = new THREE.TextureLoader().load("./circle.png") // From https://threejs.org/examples/textures/sprites/circle.png
-        const starMaterial = new THREE.PointsMaterial({
-          color: 0xaaaaaa,
-          size: 10,
-          blending: THREE.AdditiveBlending,
-          transparent: true,
-          depthTest: false,
-          sizeAttenuation: true,
-          map: sprite,
-        })
-
-        stars = new THREE.Points(starGeo, starMaterial)
-        scene.add(stars)
-
-        renderer = new THREE.WebGLRenderer({
-          antialias: true,
-          preserveDrawingBuffer: false,
-        })
-        renderer.setPixelRatio(window.devicePixelRatio)
-        renderer.setClearColor(0x261b1f, 1)
-        container.appendChild(renderer.domElement)
-
-        renderer.shadowMap.enabled = true
-        renderer.shadowMap.type = THREE.PCFShadowMap
-
-        controls = new THREE.OrbitControls(camera, renderer.domElement)
-        controls.enableDamping = true
-        controls.dampingFactor = 0.1
-        controls.rotateSpeed = 0.1
-
-        // Base shader
-        baseFBO = createRenderTarget()
-        shiftShader = new THREE.RawShaderMaterial({
-          uniforms: {
-            inputTexture: { type: "t", value: baseFBO.texture },
-            resolution: { type: "v2", value: resolution },
+      createApp({
+        data() {
+          return {
+            galaxyName: "LORENZ I",
+            sliderState: {
+              a: 10000000,
+              b: 28000000,
+              c: 2666666,
+              x: 0,
+              y: 10000000,
+              z: 10000000,
+            },
+          }
+        },
+        computed: {
+          attractorValues() {
+            return {
+              a: this.sliderState.a / SLIDER_PRECISION,
+              b: this.sliderState.b / SLIDER_PRECISION,
+              c: this.sliderState.c / SLIDER_PRECISION,
+              x: this.sliderState.x / SLIDER_PRECISION,
+              y: this.sliderState.y / SLIDER_PRECISION,
+              z: this.sliderState.z / SLIDER_PRECISION,
+            }
           },
-          vertexShader: document.getElementById("ortho-vs").textContent,
-          fragmentShader: document.getElementById("shift-fs").textContent,
-        })
-
-        orthoScene = new THREE.Scene()
-        orthoCamera = new THREE.OrthographicCamera(
-          1 / -2,
-          1 / 2,
-          1 / 2,
-          1 / -2,
-          0.00001,
-          1000
-        )
-        orthoQuad = new THREE.Mesh(new THREE.PlaneBufferGeometry(1, 1))
-        orthoScene.add(orthoQuad)
-
-        $("input[type='range']").trigger("input") // Trigger initScene
-
-        onWindowResized()
-        window.addEventListener("resize", onWindowResized)
-
-        animate()
-      }
-
-      const onWindowResized = (event) => {
-        const w = container.clientWidth
-        const h = container.clientHeight
-
-        renderer.setSize(w, h)
-        camera.aspect = w / h
-        camera.updateProjectionMatrix()
-
-        let dPR = window.devicePixelRatio
-        resolution.set(w * dPR, h * dPR)
-        baseFBO.setSize(w * dPR, h * dPR)
-
-        orthoQuad.scale.set(w, h, 1)
-
-        orthoCamera.left = -w / 2
-        orthoCamera.right = w / 2
-        orthoCamera.top = h / 2
-        orthoCamera.bottom = -h / 2
-        orthoCamera.updateProjectionMatrix()
-      }
-
-      const animate = () => {
-        requestAnimationFrame(animate)
-        controls.update()
-
-        if (slowMotion === true) {
-          solidLines.geometry.setDrawRange(0, time)
-          smokeLines.geometry.setDrawRange(0, time)
-          if (time < ANIMATION_FRAMES) time += 300
-        }
-
-        renderer.render(scene, camera, baseFBO)
-        orthoQuad.material = shiftShader
-        renderer.render(orthoScene, orthoCamera)
-      }
-
-      window.addEventListener("load", init)
-
-      // Init sliders
-      $("input[type='range']").on("input change", (el) => {
-        el = el.target
-        attractor[el.name] = el.value / SLIDER_PRECISION
-        slowMotion = false
-        initScene(false)
-      })
+        },
+        methods: {
+          getAttractor() {
+            const a = this.attractorValues.a
+            const b = this.attractorValues.b
+            const c = this.attractorValues.c
+            const x = this.attractorValues.x
+            const y = this.attractorValues.y
+            const z = this.attractorValues.z
+            const color = `0x${Math.abs(Math.floor((a / 20) * 255)).toString(16)}${Math.abs(
+              Math.floor((b / 50) * 255)
+            ).toString(16)}${Math.abs(Math.floor((c / 5) * 255)).toString(16)}`
+            return { a, b, c, x, y, z, color }
+          },
+          randomize() {
+            this.sliderState.a = Math.floor((Math.random() * 15 + 5) * SLIDER_PRECISION)
+            this.sliderState.b = Math.floor((Math.random() * 45 + 5) * SLIDER_PRECISION)
+            this.sliderState.c = Math.floor(((Math.random() * 4 + 1) / 10) * SLIDER_PRECISION)
+            this.onSliderChange()
+          },
+          async saveAttractor() {
+            const attractor = this.getAttractor()
+            const payload = {
+              attractorName: this.galaxyName,
+              a: attractor.a,
+              b: attractor.b,
+              c: attractor.c,
+            }
+            try {
+              const response = await fetch("/save-attractor", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload),
+              })
+              if (!response.ok) {
+                throw new Error("save failed")
+              }
+              const result = await response.json()
+              alert(`Saved: ${result.fileName}`)
+            } catch (error) {
+              alert("Failed to save attractor.")
+            }
+          },
+          createRenderTarget() {
+            return new THREE.WebGLRenderTarget(1, 1, {
+              wrapS: THREE.ClampToEdgeWrapping,
+              wrapT: THREE.ClampToEdgeWrapping,
+              format: THREE.RGBAFormat,
+              stencilBuffer: false,
+              depthBuffer: true,
+            })
+          },
+          initScene() {
+            const attractor = this.getAttractor()
+            lorenz.init(
+              attractor.a,
+              attractor.c,
+              attractor.b,
+              attractor.x,
+              attractor.y,
+              attractor.z
+            )
+            scene.remove(scene.getObjectByName("att"))
+            const attractorObject = new THREE.Object3D()
+            attractorObject.name = "att"
+            scene.add(attractorObject)
+            time = 0
+            lorenz.next(NUM_POINTS)
+            let geometry = new THREE.Geometry()
+            lorenz
+              .points(true, THREE.Vector3)
+              .forEach((point) => geometry.vertices.push(point))
+            geometry.computeBoundingBox()
+            const center = geometry.boundingBox.max.clone()
+            center.sub(geometry.boundingBox.min)
+            center.multiplyScalar(0.5)
+            center.add(geometry.boundingBox.min)
+            center.multiplyScalar(-1)
+            attractorObject.position.copy(center)
+            const line = new THREE.MeshLine()
+            line.setGeometry(geometry, (p) => {
+              return 2 + Math.sin(500 * p)
+            })
+            smokeLines = new THREE.Mesh(
+              line.geometry,
+              new THREE.MeshLineMaterial({
+                color: new THREE.Color(Number(attractor.color)),
+                resolution: resolution,
+                sizeAttenuation: true,
+                lineWidth: 1.5 * SPREAD,
+                opacity: 0.05,
+                near: camera.near,
+                far: camera.far,
+                depthWrite: false,
+                depthTest: false,
+                transparent: true,
+                blending: THREE.AdditiveBlending,
+              })
+            )
+            attractorObject.add(smokeLines)
+            geometry = new THREE.BufferGeometry()
+            const positions = new Float32Array(lorenz.points())
+            geometry.addAttribute("position", new THREE.BufferAttribute(positions, 3))
+            solidLines = new THREE.Line(
+              geometry,
+              new THREE.LineBasicMaterial({
+                color: new THREE.Color(0xffffff),
+                opacity: 0.25,
+                transparent: true,
+                blending: THREE.AdditiveBlending,
+              })
+            )
+            attractorObject.add(solidLines)
+            this.galaxyName = namegen()
+          },
+          onSliderChange() {
+            if (!scene) return
+            slowMotion = false
+            this.initScene()
+          },
+          initThree() {
+            const container = this.$refs.container
+            scene = new THREE.Scene()
+            camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 0.1, 10000)
+            camera.target = new THREE.Vector3(0, 0, 0)
+            camera.position.set(0, 0, 50)
+            camera.lookAt(camera.target)
+            scene.add(camera)
+            const starGeo = new THREE.Geometry()
+            for (let i = 0; i < 3000; i++) {
+              const star = new THREE.Vector3(
+                Math.random() * 10000 - 5000,
+                Math.random() * 10000 - 5000,
+                Math.random() * 10000 - 5000
+              )
+              starGeo.vertices.push(star)
+            }
+            const sprite = new THREE.TextureLoader().load("./circle.png")
+            const starMaterial = new THREE.PointsMaterial({
+              color: 0xaaaaaa,
+              size: 10,
+              blending: THREE.AdditiveBlending,
+              transparent: true,
+              depthTest: false,
+              sizeAttenuation: true,
+              map: sprite,
+            })
+            const stars = new THREE.Points(starGeo, starMaterial)
+            scene.add(stars)
+            renderer = new THREE.WebGLRenderer({
+              antialias: true,
+              preserveDrawingBuffer: false,
+            })
+            renderer.setPixelRatio(window.devicePixelRatio)
+            renderer.setClearColor(0x261b1f, 1)
+            container.appendChild(renderer.domElement)
+            renderer.shadowMap.enabled = true
+            renderer.shadowMap.type = THREE.PCFShadowMap
+            controls = new THREE.OrbitControls(camera, renderer.domElement)
+            controls.enableDamping = true
+            controls.dampingFactor = 0.1
+            controls.rotateSpeed = 0.1
+            baseFBO = this.createRenderTarget()
+            shiftShader = new THREE.RawShaderMaterial({
+              uniforms: {
+                inputTexture: { type: "t", value: baseFBO.texture },
+                resolution: { type: "v2", value: resolution },
+              },
+              vertexShader: document.getElementById("ortho-vs").textContent,
+              fragmentShader: document.getElementById("shift-fs").textContent,
+            })
+            orthoScene = new THREE.Scene()
+            orthoCamera = new THREE.OrthographicCamera(1 / -2, 1 / 2, 1 / 2, 1 / -2, 0.00001, 1000)
+            orthoQuad = new THREE.Mesh(new THREE.PlaneBufferGeometry(1, 1))
+            orthoScene.add(orthoQuad)
+            this.onWindowResized()
+            this.initScene()
+            this.animate()
+          },
+          onWindowResized() {
+            if (!renderer) return
+            const container = this.$refs.container
+            const w = container.clientWidth
+            const h = container.clientHeight
+            renderer.setSize(w, h)
+            camera.aspect = w / h
+            camera.updateProjectionMatrix()
+            const dPR = window.devicePixelRatio
+            resolution.set(w * dPR, h * dPR)
+            baseFBO.setSize(w * dPR, h * dPR)
+            orthoQuad.scale.set(w, h, 1)
+            orthoCamera.left = -w / 2
+            orthoCamera.right = w / 2
+            orthoCamera.top = h / 2
+            orthoCamera.bottom = -h / 2
+            orthoCamera.updateProjectionMatrix()
+          },
+          animate() {
+            requestAnimationFrame(this.animate)
+            controls.update()
+            if (slowMotion === true) {
+              solidLines.geometry.setDrawRange(0, time)
+              smokeLines.geometry.setDrawRange(0, time)
+              if (time < ANIMATION_FRAMES) time += 300
+            }
+            renderer.render(scene, camera, baseFBO)
+            orthoQuad.material = shiftShader
+            renderer.render(orthoScene, orthoCamera)
+          },
+        },
+        mounted() {
+          this.animate = this.animate.bind(this)
+          this.onResize = this.onWindowResized.bind(this)
+          this.initThree()
+          window.addEventListener("resize", this.onResize)
+        },
+        beforeUnmount() {
+          window.removeEventListener("resize", this.onResize)
+        },
+      }).mount("#app")
     </script>
     <!-- Cloudflare Web Analytics -->
     <script
@@ -624,3 +590,6 @@
     <!-- End Cloudflare Web Analytics -->
   </body>
 </html>
+
+
+
