@@ -46,10 +46,13 @@ test("renders strange attractor scene and controls", async ({ page }) => {
   await expect(page.locator("#container canvas")).toHaveCount(1);
 
   const sliders = page.locator("input[type='range']");
-  await expect(sliders).toHaveCount(3);
+  await expect(sliders).toHaveCount(6);
   await expect(page.locator("input[name='a']")).toBeVisible();
   await expect(page.locator("input[name='b']")).toBeVisible();
   await expect(page.locator("input[name='c']")).toBeVisible();
+  await expect(page.locator("input[name='x']")).toBeVisible();
+  await expect(page.locator("input[name='y']")).toBeVisible();
+  await expect(page.locator("input[name='z']")).toBeVisible();
 });
 
 test("drags sliders A, B, C with 1 second intervals", async ({ page }) => {
