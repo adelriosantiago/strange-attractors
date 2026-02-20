@@ -92,6 +92,11 @@
         top: 50px;
         left: 10px;
       }
+      #save-attractor {
+        position: absolute;
+        top: 90px;
+        left: 10px;
+      }
       #galaxy-name {
         position: absolute;
         top: -10px;
@@ -177,6 +182,9 @@
     <a id="randomize" href="#" class="black-btn" onclick="randomize()"
       >RANDOMIZE</a
     >
+    <button id="save-attractor" class="black-btn" type="button" onclick="saveAttractor()">
+      SAVE
+    </button>
     <div id="formula">
       <p>Formula:</p>
       <span
@@ -298,6 +306,34 @@
           ((Math.random() * 4 + 1) / 10) * SLIDER_PRECISION // Good ranges: 1.0 -> 5.0 (beta)
         )
         $("input[type='range']").trigger("input")
+      }
+
+      const saveAttractor = async function () {
+        const payload = {
+          attractorName: document.getElementById("galaxy-name").textContent.trim(),
+          a: attractor.a,
+          b: attractor.b,
+          c: attractor.c,
+        }
+
+        try {
+          const response = await fetch("/save-attractor", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+          })
+
+          if (!response.ok) {
+            throw new Error("save failed")
+          }
+
+          const result = await response.json()
+          alert(`Saved: ${result.fileName}`)
+        } catch (error) {
+          alert("Failed to save attractor.")
+        }
       }
 
       let resolution = new THREE.Vector2(window.innerWidth, window.innerHeight)

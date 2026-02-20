@@ -3,6 +3,7 @@ node_modules
 /dist
 playwright-report
 test-results
+savefiles
 
 # local env files
 .env.local
