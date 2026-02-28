@@ -15,7 +15,7 @@
     <script src="/three.min.js"></script>
     <script src="/OrbitControls.min.js"></script>
     <script src="/THREE.MeshLine.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/dat.gui@0.7.9/build/dat.gui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tweakpane@3.1.10/dist/tweakpane.min.js"></script>
     <script src="/namegen.js"></script>
     <script src="/lorenz.build.js"></script>
 
@@ -149,7 +149,7 @@
         left: 15px;
         width: 280px;
       }
-      #param-controls .dg.main {
+      #param-controls .tp-dfwv {
         width: 100% !important;
       }
     </style>
@@ -229,7 +229,7 @@
       let shiftShader
       let time = 0
       let slowMotion = true
-      let gui
+      let pane
 
       createApp({
         data() {
@@ -243,7 +243,7 @@
               y: 10,
               z: 10,
             },
-            guiControllers: {},
+            paneBindings: [],
           }
         },
         methods: {
@@ -259,37 +259,45 @@
             ).toString(16)}${Math.abs(Math.floor((c / 5) * 255)).toString(16)}`
             return { a, b, c, x, y, z, color }
           },
-          initGui() {
-            if (gui) {
-              gui.destroy()
+          initPane() {
+            if (pane) {
+              pane.dispose()
             }
             const paramControls = document.getElementById("param-controls")
             paramControls.innerHTML = ""
-            gui = new dat.GUI({ autoPlace: false, width: 280 })
-            paramControls.appendChild(gui.domElement)
-            this.guiControllers = {
-              a: gui.add(this.guiValues, "a", 5, 20, 0.000001).name("sigma"),
-              b: gui.add(this.guiValues, "b", 5, 50, 0.000001).name("rho"),
-              c: gui.add(this.guiValues, "c", 1, 5, 0.000001).name("beta"),
-              x: gui.add(this.guiValues, "x", -20, 20, 0.000001).name("x"),
-              y: gui.add(this.guiValues, "y", -20, 20, 0.000001).name("y"),
-              z: gui.add(this.guiValues, "z", -20, 20, 0.000001).name("z"),
+            pane = new Tweakpane.Pane({
+              container: paramControls,
+              title: "Parameters",
+            })
+            this.paneBindings = [
+              pane.addInput(this.guiValues, "a", { min: 5, max: 20, step: 0.000001, label: "sigma" }),
+              pane.addInput(this.guiValues, "b", { min: 5, max: 50, step: 0.000001, label: "rho" }),
+              pane.addInput(this.guiValues, "c", { min: 1, max: 5, step: 0.000001, label: "beta" }),
+              pane.addInput(this.guiValues, "x", { min: -20, max: 20, step: 0.000001, label: "x" }),
+              pane.addInput(this.guiValues, "y", { min: -20, max: 20, step: 0.000001, label: "y" }),
+              pane.addInput(this.guiValues, "z", { min: -20, max: 20, step: 0.000001, label: "z" }),
+            ]
+            pane.on("change", () => this.onSliderChange())
+            window.__attractorPane = {
+              setValue: (key, value) => {
+                this.guiValues[key] = value
+                this.refreshPane()
+                this.onSliderChange()
+              },
+              getValues: () => ({ ...this.guiValues }),
+              count: () => this.paneBindings.length,
             }
-            Object.values(this.guiControllers).forEach((controller) => {
-              controller.onChange(() => this.onSliderChange())
-            })
-            window.__attractorGui = gui
           },
-          refreshGui() {
-            Object.values(this.guiControllers).forEach((controller) => {
-              controller.updateDisplay()
-            })
+          refreshPane() {
+            if (pane) {
+              pane.refresh()
+            }
           },
           randomize() {
             this.guiValues.a = Number((Math.random() * 15 + 5).toFixed(6))
             this.guiValues.b = Number((Math.random() * 45 + 5).toFixed(6))
             this.guiValues.c = Number((Math.random() * 4 + 1).toFixed(6))
-            this.refreshGui()
+            this.refreshPane()
             this.onSliderChange()
           },
           async saveAttractor() {
@@ -487,14 +495,14 @@
         mounted() {
           this.animate = this.animate.bind(this)
           this.onResize = this.onWindowResized.bind(this)
-          this.initGui()
+          this.initPane()
           this.initThree()
           window.addEventListener("resize", this.onResize)
         },
         beforeUnmount() {
           window.removeEventListener("resize", this.onResize)
-          if (gui) {
-            gui.destroy()
+          if (pane) {
+            pane.dispose()
           }
         },
       }).mount("#app")
