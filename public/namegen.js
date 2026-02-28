@@ -1,7 +1,7 @@
 namegen = (() => {
-  function namegen(params) {
+  const namegen = (params) => {
     // Syllable pools (kept from original)
-    var vowels = {
+    const vowels = {
       1: [
         "b",
         "c",
@@ -173,7 +173,7 @@ namegen = (() => {
       ],
     }
 
-    var mtx = [
+    const mtx = [
       [1, 1, 2, 2, 5, 5],
       [2, 2, 3, 3, 6, 6],
       [3, 3, 4, 4, 5, 5],
@@ -186,112 +186,113 @@ namegen = (() => {
       [4, 4, 1, 1, 4, 4, 3, 3, 6, 6],
     ]
 
-    // simple RNG helper (mulberry32) with seed derived from params when available
-    // create a canonical seed string from numeric params (a,b,c,x,y,z)
-    var seedStr = (function () {
-      var p = params || {}
-      var keys = ["a", "b", "c", "x", "y", "z"]
+    // Create deterministic RNG seed string from numeric params
+    const seedStr = (() => {
+      const p = params || {}
+      const keys = ["a", "b", "c", "x", "y", "z"]
       return keys
-        .map(function (k) {
-          var v = p[k] != null && !isNaN(Number(p[k])) ? Number(p[k]) : 0
-          return k + ":" + v
+        .map((k) => {
+          const v =
+            p[k] !== undefined && Number.isFinite(Number(p[k]))
+              ? Number(p[k])
+              : 0
+          return `${k}:${v}`
         })
         .join("|")
     })()
-    var hfn = function (s) {
-      var h = 2166136261 >>> 0
-      for (var k = 0; k < s.length; k++) {
+
+    // 32-bit FNV-1a hash
+    const hfn = (s) => {
+      let h = 2166136261 >>> 0
+      for (let k = 0; k < s.length; k++) {
         h ^= s.charCodeAt(k)
         h = Math.imul(h, 16777619) >>> 0
       }
       return h >>> 0
     }
-    var mulberry32 = function (a) {
-      return function () {
+
+    // Mulberry32 PRNG factory
+    const mulberry32 = (a) => {
+      return () => {
         a |= 0
         a = (a + 0x6d2b79f5) | 0
-        var t = Math.imul(a ^ (a >>> 15), 1 | a)
+        let t = Math.imul(a ^ (a >>> 15), 1 | a)
         t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
         return ((t ^ (t >>> 14)) >>> 0) / 4294967296
       }
     }
 
-    var _seed = hfn(seedStr)
-    var rand = mulberry32(_seed)
-    var fn = function (i) {
-      return Math.floor(rand() * vowels[i].length)
-    }
+    const _seed = hfn(seedStr)
+    const rand = mulberry32(_seed)
+    const fn = (i) => Math.floor(rand() * vowels[i].length)
 
     // Determine desired number of syllable blocks based on numeric params
-    var desiredSyllables
+    let desiredSyllables
     if (params) {
-      var vals = []
-      ;["a", "b", "c", "x", "y", "z"].forEach(function (k) {
-        if (params[k] != null && !isNaN(Number(params[k])))
+      const vals = []
+      ;["a", "b", "c", "x", "y", "z"].forEach((k) => {
+        if (params[k] !== undefined && Number.isFinite(Number(params[k]))) {
           vals.push(Math.abs(Number(params[k])))
+        }
       })
-      if (vals.length) {
-        var avg =
-          vals.reduce(function (s, v) {
-            return s + v
-          }, 0) / vals.length
-        // map average magnitude to syllable count: gentle growth with log10
+      if (vals.length > 0) {
+        const avg = vals.reduce((s, v) => s + v, 0) / vals.length
+        // Map average magnitude to syllable count: gentle growth with log10
         desiredSyllables = 1 + Math.min(9, Math.floor(Math.log10(avg + 1) * 4))
       }
     }
 
-    // fallback to original behavior: use the length of the first pattern
+    // Fallback to original behavior: use the length of the first pattern
     if (!desiredSyllables || desiredSyllables < 1) {
-      var c = 0
-      var comp0 = mtx[c % mtx.length]
+      const comp0 = mtx[0]
       desiredSyllables = Math.max(1, comp0.length / 2)
     }
 
-    // helper: build one word of N syllable-blocks
-    var makeWord = function (syllables) {
-      var w = ""
-      for (var si = 0; si < syllables; si++) {
-        var comp = mtx[Math.floor(rand() * mtx.length)]
-        var pairIndex = Math.floor(rand() * (comp.length / 2))
-        var t = comp[pairIndex * 2]
-        var v = comp[pairIndex * 2 + 1]
+    // Helper: build one word of N syllable-blocks
+    const makeWord = (syllables) => {
+      let w = ""
+      for (let si = 0; si < syllables; si++) {
+        const comp = mtx[Math.floor(rand() * mtx.length)]
+        const pairIndex = Math.floor(rand() * (comp.length / 2))
+        const t = comp[pairIndex * 2]
+        const v = comp[pairIndex * 2 + 1]
         w += vowels[t][fn(v)]
       }
       return w.replace(/[^a-zA-Z]/g, "").toUpperCase()
     }
 
     // Format selection (deterministic): choose number of words (1..4)
-    var maxWords = Math.min(4, Math.max(1, Math.floor(desiredSyllables / 1)))
-    var wordsCount = 1 + Math.floor(rand() * maxWords)
+    const maxWords = Math.min(4, Math.max(1, Math.floor(desiredSyllables / 1)))
+    const wordsCount = 1 + Math.floor(rand() * maxWords)
 
     // Distribute syllables across words (round-robin)
-    var base = Math.floor(desiredSyllables / wordsCount)
-    var extra = desiredSyllables - base * wordsCount
-    var words = []
-    for (var wi = 0; wi < wordsCount; wi++) {
-      var syll = base + (wi < extra ? 1 : 0)
-      // ensure at least 1 syllable per word
+    const base = Math.floor(desiredSyllables / wordsCount)
+    const extra = desiredSyllables - base * wordsCount
+    const words = []
+    for (let wi = 0; wi < wordsCount; wi++) {
+      let syll = base + (wi < extra ? 1 : 0)
+      // Ensure at least 1 syllable per word
       syll = Math.max(1, syll)
       words.push(makeWord(syll))
     }
 
     // Optionally append a numeric or roman suffix: probability grows with desiredSyllables
-    var appendChance = Math.min(0.6, 0.15 + desiredSyllables / 20)
-    var doAppend = rand() < appendChance
-    var suffix = ""
+    const appendChance = Math.min(0.6, 0.15 + desiredSyllables / 20)
+    const doAppend = rand() < appendChance
+    let suffix = ""
     if (doAppend) {
-      // choose upper bound based on desiredSyllables
-      var maxNum = Math.max(
+      // Choose upper bound based on desiredSyllables
+      const maxNum = Math.max(
         9,
         Math.min(9999, Math.floor(Math.pow(10, Math.min(6, desiredSyllables))))
       )
-      // pick a number deterministically
-      var num = 1 + Math.floor(rand() * maxNum)
-      // decide arabic vs roman
-      var useRoman = rand() < 0.5
+      // Pick a number deterministically
+      const num = 1 + Math.floor(rand() * maxNum)
+      // Decide arabic vs roman
+      const useRoman = rand() < 0.5
       if (useRoman) {
-        var toRoman = function (n) {
-          var romans = [
+        const toRoman = (n) => {
+          const romans = [
             [1000, "M"],
             [900, "CM"],
             [500, "D"],
@@ -306,10 +307,10 @@ namegen = (() => {
             [4, "IV"],
             [1, "I"],
           ]
-          var r = ""
-          for (var i = 0; i < romans.length; i++) {
-            var v = romans[i][0],
-              s = romans[i][1]
+          let r = ""
+          for (let i = 0; i < romans.length; i++) {
+            const v = romans[i][0]
+            const s = romans[i][1]
             while (n >= v) {
               r += s
               n -= v
@@ -317,16 +318,15 @@ namegen = (() => {
           }
           return r
         }
-        suffix = " " + toRoman(Math.max(1, Math.min(3999, num)))
+        suffix = ` ${toRoman(Math.max(1, Math.min(3999, num)))}`
       } else {
-        suffix = " " + String(num)
+        suffix = ` ${String(num)}`
       }
     }
 
     // Join words with spaces
-    var finalName = words.join(" ") + suffix
+    const finalName = words.join(" ") + suffix
     return finalName
   }
-
   return namegen
 })()
