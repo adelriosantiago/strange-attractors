@@ -247,19 +247,85 @@ namegen = (() => {
       desiredSyllables = Math.max(1, comp0.length / 2)
     }
 
-    // build name from syllable blocks (use patterns to keep pronounceable structure)
-    var name = ""
-    for (var s = 0; s < desiredSyllables; s++) {
-      var comp = mtx[Math.floor(rand() * mtx.length)]
-      // Pick a pair within the pattern (driven by seeded rand)
-      var pairIndex = Math.floor(rand() * (comp.length / 2))
-      var t = comp[pairIndex * 2]
-      var v = comp[pairIndex * 2 + 1]
-      name += vowels[t][fn(v)]
+    // helper: build one word of N syllable-blocks
+    var makeWord = function (syllables) {
+      var w = ""
+      for (var si = 0; si < syllables; si++) {
+        var comp = mtx[Math.floor(rand() * mtx.length)]
+        var pairIndex = Math.floor(rand() * (comp.length / 2))
+        var t = comp[pairIndex * 2]
+        var v = comp[pairIndex * 2 + 1]
+        w += vowels[t][fn(v)]
+      }
+      return w.replace(/[^a-zA-Z]/g, "").toUpperCase()
     }
 
-    // sanitize and return in upper-case for consistency
-    return name.replace(/[^a-zA-Z]/g, "").toUpperCase()
+    // Format selection (deterministic): choose number of words (1..4)
+    var maxWords = Math.min(4, Math.max(1, Math.floor(desiredSyllables / 1)))
+    var wordsCount = 1 + Math.floor(rand() * maxWords)
+
+    // Distribute syllables across words (round-robin)
+    var base = Math.floor(desiredSyllables / wordsCount)
+    var extra = desiredSyllables - base * wordsCount
+    var words = []
+    for (var wi = 0; wi < wordsCount; wi++) {
+      var syll = base + (wi < extra ? 1 : 0)
+      // ensure at least 1 syllable per word
+      syll = Math.max(1, syll)
+      words.push(makeWord(syll))
+    }
+
+    // Optionally append a numeric or roman suffix: probability grows with desiredSyllables
+    var appendChance = Math.min(0.6, 0.15 + desiredSyllables / 20)
+    var doAppend = rand() < appendChance
+    var suffix = ""
+    if (doAppend) {
+      // choose upper bound based on desiredSyllables
+      var maxNum = Math.max(
+        9,
+        Math.min(9999, Math.floor(Math.pow(10, Math.min(6, desiredSyllables))))
+      )
+      // pick a number deterministically
+      var num = 1 + Math.floor(rand() * maxNum)
+      // decide arabic vs roman
+      var useRoman = rand() < 0.5
+      if (useRoman) {
+        var toRoman = function (n) {
+          var romans = [
+            [1000, "M"],
+            [900, "CM"],
+            [500, "D"],
+            [400, "CD"],
+            [100, "C"],
+            [90, "XC"],
+            [50, "L"],
+            [40, "XL"],
+            [10, "X"],
+            [9, "IX"],
+            [5, "V"],
+            [4, "IV"],
+            [1, "I"],
+          ]
+          var r = ""
+          for (var i = 0; i < romans.length; i++) {
+            var v = romans[i][0],
+              s = romans[i][1]
+            while (n >= v) {
+              r += s
+              n -= v
+            }
+          }
+          return r
+        }
+        suffix = " " + toRoman(Math.max(1, Math.min(3999, num)))
+      } else {
+        suffix = " " + String(num)
+      }
+    }
+
+    // Join words with spaces
+    var finalName = words.join(" ") + suffix
+    return finalName
   }
 
   return namegen
