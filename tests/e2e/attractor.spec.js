@@ -29,8 +29,10 @@ test("renders strange attractor scene and controls", async ({ page }) => {
   await expect(page.locator("#container")).toBeVisible()
   await expect(page.locator("#container canvas")).toHaveCount(1)
 
-    await expect(page.locator("#param-controls")).toContainText("Parameters")
-    await expect(page.locator("#param-controls input[type='text']")).toHaveCount(6)
+  await expect(page.locator("#param-controls")).toContainText("Parameters")
+  await expect(page.locator("#param-controls input[type='text']")).toHaveCount(
+    6
+  )
   const paneCount = await page.evaluate(() => window.__attractorPane.count())
   expect(paneCount).toBe(6)
 })
@@ -60,7 +62,7 @@ test("updates GUI controls A, B, C with 1 second intervals", async ({
   )
   expect(paneValues.a).toBe(8.0)
   expect(paneValues.b).toBe(40.0)
-    expect(paneValues.c).toBeCloseTo(2.5, 6)
+  expect(paneValues.c).toBeCloseTo(2.5, 6)
 })
 
 test("saves current attractor into savefiles", async ({ page }) => {
