@@ -74,7 +74,7 @@ test("saves current attractor into savefiles", async ({ page }) => {
   )
 
   const dialogPromise = page.waitForEvent("dialog")
-  await page.locator("#save-attractor").click()
+  await page.locator('#param-controls button', { hasText: 'SAVE' }).click()
   const dialog = await dialogPromise
   expect(dialog.message()).toContain("Saved:")
   await dialog.accept()

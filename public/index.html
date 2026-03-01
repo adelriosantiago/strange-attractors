@@ -72,33 +72,6 @@
         z-index: -1;
         font-size: 60px;
       }
-      .black-btn {
-        color: white;
-        display: inline-block;
-        font-size: 12px;
-        padding: 0.7em 1.4em;
-        margin: 0 0.3em 0.3em 0;
-        border-radius: 0.15em;
-        box-sizing: border-box;
-        font-weight: 400;
-        color: #ffffff;
-        background-color: #484848;
-        box-shadow: inset 0 -0.6em 0 -0.35em rgba(0, 0, 0, 0.17);
-        text-align: center;
-      }
-      .black-btn:active {
-        background-color: #989898;
-      }
-      #randomize {
-        position: absolute;
-        top: 50px;
-        left: 10px;
-      }
-      #save-attractor {
-        position: absolute;
-        top: 90px;
-        left: 10px;
-      }
       #galaxy-name {
         position: absolute;
         top: -10px;
@@ -158,12 +131,6 @@
     <div id="app">
       <h1 id="loading">LOADING...</h1>
       <h2 id="galaxy-name">{{ galaxyName }}</h2>
-      <button id="randomize" type="button" class="black-btn" @click="randomize">
-        RANDOMIZE
-      </button>
-      <button id="save-attractor" class="black-btn" type="button" @click="saveAttractor">
-        SAVE
-      </button>
       <div id="formula">
         <p>Formula:</p>
         <span
@@ -277,6 +244,8 @@
               pane.addInput(this.guiValues, "y", { min: -20, max: 20, step: 0.000001, label: "y" }),
               pane.addInput(this.guiValues, "z", { min: -20, max: 20, step: 0.000001, label: "z" }),
             ]
+            pane.addButton({ title: "RANDOMIZE" }).on("click", () => this.randomize())
+            pane.addButton({ title: "SAVE" }).on("click", () => this.saveAttractor())
             pane.on("change", () => this.onSliderChange())
             window.__attractorPane = {
               setValue: (key, value) => {
