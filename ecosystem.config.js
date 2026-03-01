@@ -3,7 +3,7 @@ const package = require("./package.json")
 module.exports = {
   apps: [
     {
-      name: package.name,
+      name: `prod@${package.name}`,
       script: package.main,
       args: "",
       watch: false,
